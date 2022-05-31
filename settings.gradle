@@ -1,0 +1,16 @@
+/*dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}*/
+rootProject.name = "OutSiderAPM"
+include ':app'
+include ':anrcheck'
+include ':batterycheck'
+include ':mem'
+include ':core'
+include ':traffic'
+include ':jank'

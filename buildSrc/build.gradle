@@ -1,0 +1,27 @@
+apply plugin: 'groovy'
+
+dependencies {
+    // 添加gradle api依赖
+    // 添加groovy依赖
+    // asm需要添加该依赖
+    implementation 'com.android.tools.build:gradle:4.1.2'
+    implementation "com.android.tools.build:gradle-api:4.1.2"
+    implementation 'org.ow2.asm:asm:9.2'
+    implementation 'org.ow2.asm:asm-tree:9.2'
+}
+
+repositories {
+    google()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+//中文乱码问题（错误：编码GBK不可映射字符）
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
