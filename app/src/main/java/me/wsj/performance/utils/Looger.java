@@ -8,6 +8,13 @@ public class Looger {
     private static boolean DEBUG = true;
     public static final String TAG = "wsjLib";
 
+    public static int v(String tag, String msg) {
+        if (DEBUG) {
+            Log.v(tag, buildMessage(msg));
+        }
+        return 0;
+    }
+
     public static int i(String tag, String msg) {
         if (DEBUG) {
             Log.i(tag, buildMessage(msg));

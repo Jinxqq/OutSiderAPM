@@ -7,6 +7,8 @@ import me.wsj.anrcheck.AnrError
 import me.wsj.anrcheck.AnrInterceptor
 import me.wsj.anrcheck.AnrListener
 import me.wsj.anrcheck.AnrMonitor
+import me.wsj.batterycheck.BatteryStatsTracker
+import me.wsj.performance.utils.Looger
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.ObjectOutputStream
@@ -50,10 +52,10 @@ class APMApplication : Application() {
 
         //todo
 
-//        BatteryStatsTracker.getInstance().addBatteryListener {
-//
-//        }
-//        BatteryStatsTracker.getInstance().startTrack(this)
+        BatteryStatsTracker.getInstance().addBatteryListener {
+            Looger.e("${it.toString()}")
+        }
+        BatteryStatsTracker.getInstance().startTrack(this)
     }
 
     override fun onTerminate() {

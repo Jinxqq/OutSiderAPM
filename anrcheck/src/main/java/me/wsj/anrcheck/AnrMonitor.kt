@@ -74,6 +74,7 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) :
 
     fun setAnrListener(anrListener: AnrListener?): AnrMonitor {
         mAnrListener = anrListener ?: DEFAULT_ANR_LISTENER
+        Log.i("AnrMonitor", "setAnrListener-----")
         return this
     }
 

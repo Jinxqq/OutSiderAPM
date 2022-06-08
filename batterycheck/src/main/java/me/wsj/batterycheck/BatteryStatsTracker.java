@@ -22,7 +22,7 @@ import me.wsj.core.ITracker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatteryStatsTracker implements ITracker,Application.ActivityLifecycleCallbacks{
+public class BatteryStatsTracker implements ITracker {
     private static BatteryStatsTracker sInstance;
     private Handler mHandler;
     private String display;
@@ -31,7 +31,8 @@ public class BatteryStatsTracker implements ITracker,Application.ActivityLifecyc
 
 
     private BatteryStatsTracker() {
-        handlerThread = new HandlerThread("BatteryStats",Thread.NORM_PRIORITY);
+        handlerThread = new HandlerThread("BatteryStats", Thread.NORM_PRIORITY);
+        handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
     }
 
@@ -46,70 +47,78 @@ public class BatteryStatsTracker implements ITracker,Application.ActivityLifecyc
         return sInstance;
     }
 
-
-
-
-
-    @Override
-    public void destroy(Application application) {
-
-    }
-
     @Override
     public void startTrack(Application application) {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
 
     @Override
     public void pauseTrack(Application application) {
-
+        application.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
 
     @Override
-    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-
+    public void destroy(Application application) {
+        application.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks);
+        handlerThread.quit();
     }
 
-    @Override
-    public void onActivityStarted(@NonNull Activity activity) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-                Intent batteryStatus = activity.getApplication().registerReceiver(null, filter);
-                mStartPercent = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            }
-        });
-    }
+    private Application.ActivityLifecycleCallbacks activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
 
-    @Override
-    public void onActivityResumed(@NonNull Activity activity) {
+        @Override
+        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
 
-    }
+        }
 
-    @Override
-    public void onActivityPaused(@NonNull Activity activity) {
+        @Override
+        public void onActivityStarted(@NonNull Activity activity) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                    Intent batteryStatus = activity.getApplication().registerReceiver(null, filter);
+                    mStartPercent = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                }
+            });
+        }
 
-    }
+        @Override
+        public void onActivityResumed(@NonNull Activity activity) {
 
-    @Override
-    public void onActivityStopped(@NonNull Activity activity) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mListeners.size() > 0) {
-                    BatteryInfo batteryInfo = getBatteryInfo(activity.getApplication());
-                    for (IBatteryListener listener : mListeners) {
-                        listener.onBatteryCost(batteryInfo);
+        }
+
+        @Override
+        public void onActivityPaused(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(@NonNull Activity activity) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mListeners.size() > 0) {
+                        BatteryInfo batteryInfo = getBatteryInfo(activity.getApplication(), activity.getComponentName().getClassName());
+                        for (IBatteryListener listener : mListeners) {
+                            listener.onBatteryCost(batteryInfo);
+                        }
                     }
                 }
+            });
+        }
 
-            }
-        });
-    }
+        @Override
+        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
 
-    private BatteryInfo getBatteryInfo(Application application) {
+        }
+
+        @Override
+        public void onActivityDestroyed(@NonNull Activity activity) {
+
+        }
+    };
+
+    private BatteryInfo getBatteryInfo(Application application, String activityName) {
         if (TextUtils.isEmpty(display)) {
             display = "" + application.getResources().getDisplayMetrics().widthPixels + "*" + application.getResources().getDisplayMetrics().heightPixels;
         }
@@ -121,15 +130,18 @@ public class BatteryStatsTracker implements ITracker,Application.ActivityLifecyc
             boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                     status == BatteryManager.BATTERY_STATUS_FULL;
             int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-            batteryInfo.charging = isCharging;
-            batteryInfo.cost = isCharging ? 0 : mStartPercent - batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            batteryInfo.duration += (SystemClock.uptimeMillis() - LauncherHelpProvider.sStartUpTimeStamp) / 1000;
-            batteryInfo.screenBrightness = getSystemScreenBrightnessValue(application);
-            batteryInfo.display = display;
-            batteryInfo.total = scale;
-            Log.v("Battery", "total " + batteryInfo.total + " 用时间 " + batteryInfo.duration / 1000 + " 耗电  " + batteryInfo.cost);
+            batteryInfo.setCharging(isCharging);
+            float coast = isCharging ? 0 : mStartPercent - batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            batteryInfo.setCost(coast);
+            long duration = batteryInfo.getDuration() + (SystemClock.uptimeMillis() - LauncherHelpProvider.sStartUpTimeStamp) / 1000;
+            batteryInfo.setDuration(duration);
+            batteryInfo.setScreenBrightness(getSystemScreenBrightnessValue(application));
+            batteryInfo.setDisplay(display);
+            batteryInfo.setTotal(scale);
+            batteryInfo.setActivityName(activityName);
+//            Log.v("Battery", "total " + batteryInfo.total + " 用时间 " + batteryInfo.duration / 1000 + " 耗电  " + batteryInfo.cost);
         } catch (Exception e) {
-
+            Log.e("Battery", e.toString());
         }
 
         return batteryInfo;
@@ -140,16 +152,6 @@ public class BatteryStatsTracker implements ITracker,Application.ActivityLifecyc
         int defVal = 125;
         return Settings.System.getInt(contentResolver,
                 Settings.System.SCREEN_BRIGHTNESS, defVal);
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
-
-    }
-
-    @Override
-    public void onActivityDestroyed(@NonNull Activity activity) {
-
     }
 
     private List<IBatteryListener> mListeners = new ArrayList<>();
@@ -164,6 +166,5 @@ public class BatteryStatsTracker implements ITracker,Application.ActivityLifecyc
 
     public interface IBatteryListener {
         void onBatteryCost(BatteryInfo batteryInfo);
-
     }
 }
