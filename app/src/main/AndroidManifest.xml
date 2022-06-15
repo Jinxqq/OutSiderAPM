@@ -3,6 +3,7 @@
     package="me.wsj.performance">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".APMApplication"
@@ -13,7 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PerformanceDemo">
         <activity
-            android:name=".MainActivity2"
+            android:name=".ui.JankActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.NetworkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.WebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.FuncActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
