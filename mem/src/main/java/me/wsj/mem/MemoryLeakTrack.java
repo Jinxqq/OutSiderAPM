@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import me.wsj.core.ActivityStack;
 import me.wsj.core.ITracker;
 import me.wsj.core.utils.ProcessUtils;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -202,7 +203,7 @@ public class MemoryLeakTrack implements ITracker, Application.ActivityLifecycleC
 
 
 
-        trackMemoryInfo.procName = ProcessUtils.Companion.getCurrentProcessName(application);
+        trackMemoryInfo.procName = ProcessUtils.getCurrentProcessName();
         trackMemoryInfo.display = display;
         trackMemoryInfo.activityCount = ActivityStack.getInstance().getSize();
         return trackMemoryInfo;

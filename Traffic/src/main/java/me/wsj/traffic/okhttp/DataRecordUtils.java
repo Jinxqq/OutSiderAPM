@@ -6,7 +6,7 @@ import android.util.Log;
 /**
  * 具体实现逻辑，位于mobile module中
  *
- * @author ArgusAPM Team
+ * @author OutSiderAPM
  */
 public class DataRecordUtils {
 

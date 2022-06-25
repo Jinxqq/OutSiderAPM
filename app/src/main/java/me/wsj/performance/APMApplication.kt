@@ -7,8 +7,11 @@ import me.wsj.anrcheck.AnrError
 import me.wsj.anrcheck.AnrInterceptor
 import me.wsj.anrcheck.AnrListener
 import me.wsj.anrcheck.AnrMonitor
+import me.wsj.apm.jank.BlockTracker
 import me.wsj.batterycheck.BatteryStatsTracker
 import me.wsj.performance.utils.Looger
+import me.wsj.traffic.TrafficCheck
+import me.wsj.traffic.TrafficTracker
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.ObjectOutputStream
@@ -56,6 +59,11 @@ class APMApplication : Application() {
             Looger.e("${it.toString()}")
         }
         BatteryStatsTracker.getInstance().startTrack(this)
+
+        TrafficCheck.instance?.startTrack(this)
+
+        BlockTracker.getInstance().startTrack(this)
+//        TrafficTracker().addObserver(this)
     }
 
     override fun onTerminate() {

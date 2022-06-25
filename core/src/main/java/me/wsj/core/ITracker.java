@@ -8,7 +8,4 @@ public interface ITracker {
     void startTrack(Application application);
 
     void pauseTrack(Application application);
-
-
-
 }

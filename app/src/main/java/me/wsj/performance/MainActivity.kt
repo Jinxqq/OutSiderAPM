@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
+import androidx.lifecycle.*
 import me.wsj.performance.ui.FuncActivity
 import me.wsj.performance.ui.NetworkActivity
 import me.wsj.performance.ui.WebViewActivity
@@ -30,6 +32,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, NetworkActivity::class.java))
         }
 
+        lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                Log.e("Mainactivity", event.toString())
+            }
+        })
     }
 
 }

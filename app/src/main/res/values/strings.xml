@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PerformanceDemo</string>
+
+    <string name="tts_toast_format" formatted="false">缓冲进度为%d%%，播放进度为%d%%</string>
 </resources>

@@ -42,6 +42,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-process
-    implementation("androidx.lifecycle:lifecycle-process:2.4.1")
 
 }

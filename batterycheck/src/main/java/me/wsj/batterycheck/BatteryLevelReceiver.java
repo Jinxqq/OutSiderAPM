@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
 
+@Deprecated
 public class BatteryLevelReceiver extends BroadcastReceiver {
 
     private volatile float batteryPct;

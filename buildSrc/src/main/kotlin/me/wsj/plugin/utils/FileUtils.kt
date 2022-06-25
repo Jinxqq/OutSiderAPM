@@ -24,7 +24,7 @@ class ZipFileUtils {
             try {
                 zipOutputStream.putNextEntry(zipEntry)
                 val buffer = ByteArray(16 * 1024)
-                var length = -1
+                var length: Int
 
                 do {
                     length = inputStream.read(buffer, 0, buffer.size)
