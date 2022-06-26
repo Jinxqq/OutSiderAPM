@@ -1,16 +1,15 @@
 package me.wsj.apm.anr
 
+import android.app.Application
 import android.os.Debug
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
+import me.wsj.apm.traffic.TrafficTracker
+import me.wsj.core.ITracker
 
-class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) :
-    LifecycleEventObserver {
+class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITracker {
     private val mainHandler: Handler = Handler(Looper.getMainLooper())
     private var handlerThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
@@ -143,20 +142,6 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) :
         return this
     }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_CREATE) {//app is created
-            onAppCreate()
-        } else if (event == Lifecycle.Event.ON_STOP) {//no activities in stack
-            onAppStop()
-        } else if (event == Lifecycle.Event.ON_START) {//when first activity is started
-            onAppStart()
-        }
-    }
-
-    private fun onAppStart() {
-        delayToTryCollectingAnr()
-    }
-
     @Synchronized
     private fun delayToTryCollectingAnr() {
         val needPost = mTick == 0L
@@ -165,27 +150,6 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) :
             mainHandler.post(mTicker)
         }
         backgroundHandler?.postDelayed(mAnrCollector, ANR_COLLECTING_INTERVAL)
-    }
-
-    private fun onAppCreate() {
-        handlerThread?.start()
-    }
-
-    private fun onAppStop() {
-        backgroundHandler?.removeCallbacksAndMessages(null)
-        mainHandler.removeCallbacksAndMessages(null)
-    }
-
-    /**
-     * When {@see Application#onTerminate()} is called, invoke this method manually.
-     * It will not be invoke. Because {@see Application#onTerminate()} is for use in emulated process environments.
-     * It will never be called on a production Android device, where processes are
-     * removed by simply killing them; no user code (including this callback)
-     * is executed when doing so.
-     */
-    fun onAppTerminate() {
-        handlerThread?.quitSafely()
-        handlerThread = null
     }
 
     companion object {
@@ -204,5 +168,26 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) :
                 return 0
             }
         }
+
+        val instance: AnrMonitor by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            AnrMonitor()
+        }
+    }
+
+    override fun destroy(application: Application?) {
+        backgroundHandler?.removeCallbacksAndMessages(null)
+        mainHandler.removeCallbacksAndMessages(null)
+
+        handlerThread?.quitSafely()
+        handlerThread = null
+    }
+
+    override fun startTrack(application: Application?) {
+        handlerThread?.start()
+        delayToTryCollectingAnr()
+    }
+
+    override fun pauseTrack(application: Application?) {
+        //To do sth.
     }
 }

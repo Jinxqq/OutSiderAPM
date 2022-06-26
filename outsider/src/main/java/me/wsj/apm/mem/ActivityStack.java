@@ -1,4 +1,4 @@
-package me.wsj.core;
+package me.wsj.apm.mem;
 
 import android.app.Activity;
 

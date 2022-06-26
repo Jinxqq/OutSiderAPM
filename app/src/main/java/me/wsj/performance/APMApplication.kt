@@ -3,30 +3,31 @@ package me.wsj.performance
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
+import me.wsj.apm.OutSider
 import me.wsj.apm.anr.AnrError
 import me.wsj.apm.anr.AnrInterceptor
 import me.wsj.apm.anr.AnrListener
 import me.wsj.apm.anr.AnrMonitor
+import me.wsj.apm.battery.BatteryStatsTracker
 import me.wsj.apm.jank.BlockTracker
-import me.wsj.batterycheck.BatteryStatsTracker
+import me.wsj.apm.traffic.TrafficTracker
 import me.wsj.performance.utils.Looger
-import me.wsj.traffic.TrafficCheck
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.ObjectOutputStream
 
 class APMApplication : Application() {
-    var duration = 4L
+    /*var duration = 4L
     val anrMonitor = AnrMonitor(3000)
     val silentAnrListener = object : AnrListener {
         override fun onAppNotResponding(error: AnrError) {
             Log.d("anr-log", "onAppNotResponding", error)
         }
-    }
+    }*/
 
     override fun onCreate() {
         super.onCreate()
-        anrMonitor.setIgnoreDebugger(true)
+        /*anrMonitor.setIgnoreDebugger(true)
             .setReportAllThreads()
             .setAnrListener(object : AnrListener {
                 override fun onAppNotResponding(error: AnrError) {
@@ -48,25 +49,10 @@ class APMApplication : Application() {
                     }
                     return ret
                 }
-            })
+            })*/
 
-        ProcessLifecycleOwner.get().lifecycle.addObserver(anrMonitor)
+//        ProcessLifecycleOwner.get().lifecycle.addObserver(anrMonitor)
+        OutSider.init(this)
 
-        //todo
-
-        BatteryStatsTracker.getInstance().addBatteryListener {
-            Looger.e("${it.toString()}")
-        }
-        BatteryStatsTracker.getInstance().startTrack(this)
-
-        TrafficCheck.instance?.startTrack(this)
-
-        BlockTracker.getInstance().startTrack(this)
-//        TrafficTracker().addObserver(this)
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        anrMonitor.onAppTerminate();
     }
 }

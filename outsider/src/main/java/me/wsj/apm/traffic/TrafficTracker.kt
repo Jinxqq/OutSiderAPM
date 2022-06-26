@@ -1,31 +1,20 @@
-package me.wsj.traffic
+package me.wsj.apm.traffic
 
 import android.app.Activity
 import android.app.Application
 import me.wsj.core.ITracker
-import me.wsj.traffic.Traffic
-import me.wsj.traffic.TrafficListener
 import android.app.Application.ActivityLifecycleCallbacks
-import me.wsj.traffic.TrafficCheck
 import android.net.TrafficStats
-import android.os.Bundle
 import android.os.Process
+import me.wsj.apm.mem.ITrackMemoryListener
+import me.wsj.core.BaseTracker
 import me.wsj.core.extensions.noOpDelegate
 import java.util.ArrayList
 import java.util.HashMap
 
-class TrafficCheck private constructor() : ITracker {
+class TrafficTracker private constructor() : BaseTracker<TrafficListener>(), ITracker {
     private val mHashMap = HashMap<Activity, Traffic?>()
     private var mCurrentStats: Long = 0
-    private val mStatsListeners: MutableList<TrafficListener> = ArrayList()
-
-    fun addTackTrafficStatsListener(listener: TrafficListener) {
-        mStatsListeners.add(listener)
-    }
-
-    fun removeTrackTrafficStatsListener(listener: TrafficListener) {
-        mStatsListeners.remove(listener)
-    }
 
     private val mActivityLifecycleCallbacks: ActivityLifecycleCallbacks =
         object : ActivityLifecycleCallbacks by noOpDelegate() {
@@ -66,16 +55,12 @@ class TrafficCheck private constructor() : ITracker {
     fun markActivityDestroy(activity: Activity) {
         val item = mHashMap[activity]
         if (item != null) {
-            for (trafficListener in mStatsListeners) {
+            for (trafficListener in listeners) {
                 trafficListener.getTrafficStats(item.activity, item.trafficCost)
                 mHashMap.remove(activity)
             }
             item.activity = null
         }
-    }
-
-    override fun destroy(application: Application) {
-        application.unregisterActivityLifecycleCallbacks(mActivityLifecycleCallbacks)
     }
 
     override fun startTrack(application: Application) {
@@ -84,20 +69,29 @@ class TrafficCheck private constructor() : ITracker {
 
     override fun pauseTrack(application: Application) {}
 
+    override fun destroy(application: Application) {
+        application.unregisterActivityLifecycleCallbacks(mActivityLifecycleCallbacks)
+    }
+
     companion object {
-        @Volatile
-        private var sInstance: TrafficCheck? = null
         private var sSequence = 0
-        val instance: TrafficCheck?
+
+        val instance: TrafficTracker by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            TrafficTracker()
+        }
+        /*
+        @Volatile
+        private var sInstance: TrafficTracker? = null
+        val instance: TrafficTracker?
             get() {
                 if (sInstance == null) {
-                    synchronized(TrafficCheck::class.java) {
+                    synchronized(TrafficTracker::class.java) {
                         if (sInstance == null) {
-                            sInstance = TrafficCheck()
+                            sInstance = TrafficTracker()
                         }
                     }
                 }
                 return sInstance
-            }
+            }*/
     }
 }
