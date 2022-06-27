@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import me.wsj.apm.OutSiderKt;
 import me.wsj.core.storage.BaseInfo;
 import me.wsj.core.utils.ProcessUtils;
 
@@ -59,7 +61,7 @@ public class BlockInfo extends BaseInfo {
             values.put(DBKey.BLOCK_STACK, blockStack);
             values.put(DBKey.BLOCK_TIME, blockTime);
         } catch (Exception e) {
-            Log.e(SUB_TAG, e.toString());
+            Log.e(OutSiderKt.TAG, e.toString());
         }
         return values;
     }

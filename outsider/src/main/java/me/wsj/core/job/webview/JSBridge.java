@@ -6,13 +6,14 @@ import android.webkit.JavascriptInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import me.wsj.apm.OutSiderKt;
+
 /**
  * https://www.jianshu.com/p/b908acf1d3a0
  *
  * https://blog.csdn.net/jwcqc/article/details/52937672
  */
 public class JSBridge {
-    private static final String TAG = "JSBridge";
     public static final String JS_INTERFACE_NAME = "android_apm";
     public static final String JS_MONITOR = "javascript:%s.sendResource(JSON.stringify(window.performance.timing));";
     private String mThisUrl;
@@ -51,11 +52,11 @@ public class JSBridge {
             destObject.put("pt", System.currentTimeMillis());
             destObject.put("rs", source.getLong("responseStart"));
             destObject.put("u", url);
-            Log.e(TAG, "dispatchToAopWebTrace: " + destObject.toString());
+            Log.e(OutSiderKt.TAG, "dispatchToAopWebTrace: " + destObject.toString());
 //            AopWebTrace.dispatch(destObject);
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(TAG, "Method: addJavascriptInterface()" + e.getMessage());
+            Log.e(OutSiderKt.TAG, "Method: addJavascriptInterface()" + e.getMessage());
         }
     }
 }

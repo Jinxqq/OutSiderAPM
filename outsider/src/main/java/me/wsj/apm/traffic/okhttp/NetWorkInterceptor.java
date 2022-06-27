@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import me.wsj.apm.OutSiderKt;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -22,7 +23,6 @@ import okio.BufferedSource;
 public class NetWorkInterceptor implements Interceptor {
 
     private static final Boolean DEBUG = true;
-    private static final String TAG = "NetWorkInterceptor";
 
     private OkHttpData mOkHttpData;
 
@@ -38,7 +38,7 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.startTime = startNs;
 
         if (DEBUG) {
-            Log.d(TAG, "okhttp request 开始时间：" + mOkHttpData.startTime);
+            Log.d(OutSiderKt.TAG, "okhttp request 开始时间：" + mOkHttpData.startTime);
         }
 
         Request request = chain.request();
@@ -52,7 +52,7 @@ public class NetWorkInterceptor implements Interceptor {
         } catch (IOException e) {
             if (DEBUG) {
                 e.printStackTrace();
-                Log.e(TAG, "HTTP FAILED: " + e);
+                Log.e(OutSiderKt.TAG, "HTTP FAILED: " + e);
             }
             throw e;
         }
@@ -60,13 +60,13 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.costTime = System.currentTimeMillis() - startNs;
 
         if (DEBUG) {
-            Log.d(TAG, "okhttp chain.proceed 耗时：" + mOkHttpData.costTime);
+            Log.d(OutSiderKt.TAG, "okhttp chain.proceed 耗时：" + mOkHttpData.costTime);
         }
 
         recordResponse(response);
 
         if (DEBUG) {
-            Log.d(TAG, "okhttp chain.proceed end.");
+            Log.d(OutSiderKt.TAG, "okhttp chain.proceed end.");
         }
 
         DataRecordUtils.recordUrlRequest(mOkHttpData);
@@ -87,7 +87,7 @@ public class NetWorkInterceptor implements Interceptor {
         if (requestBody == null) {
             mOkHttpData.requestSize = request.url().toString().getBytes().length;
             if (DEBUG) {
-                Log.d(TAG, "okhttp request 上行数据，大小：" + mOkHttpData.requestSize);
+                Log.d(OutSiderKt.TAG, "okhttp request 上行数据，大小：" + mOkHttpData.requestSize);
             }
             return;
         }
@@ -117,7 +117,7 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.code = response.code();
 
         if (DEBUG) {
-            Log.d(TAG, "okhttp chain.proceed 状态码：" + mOkHttpData.code);
+            Log.d(OutSiderKt.TAG, "okhttp chain.proceed 状态码：" + mOkHttpData.code);
         }
 
         if (!response.isSuccessful()) {
@@ -133,7 +133,7 @@ public class NetWorkInterceptor implements Interceptor {
 
         if (contentLength > 0) {
             if (DEBUG) {
-                Log.d(TAG, "直接通过responseBody取到contentLength:" + contentLength);
+                Log.d(OutSiderKt.TAG, "直接通过responseBody取到contentLength:" + contentLength);
             }
         } else {
             BufferedSource source = responseBody.source();
@@ -156,7 +156,7 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.responseSize = contentLength;
 
         if (DEBUG) {
-            Log.d(TAG, "okhttp 接收字节数：" + mOkHttpData.responseSize);
+            Log.d(OutSiderKt.TAG, "okhttp 接收字节数：" + mOkHttpData.responseSize);
         }
     }
 }

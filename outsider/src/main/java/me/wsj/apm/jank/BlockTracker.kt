@@ -6,6 +6,7 @@ import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
 import android.util.Printer
+import me.wsj.apm.TAG
 import me.wsj.core.ITracker
 import me.wsj.core.job.AsyncThreadTask
 
@@ -15,12 +16,9 @@ import me.wsj.core.job.AsyncThreadTask
  * @author OutSiderAPM
  */
 
-const val START = ">>>>> Dispatching"
-const val END = "<<<<< Finished"
-
 class BlockTracker : ITracker {
     private val SUB_TAG = "BlockTask"
-    private val mBlockThread = HandlerThread("blockThread")
+    private val mBlockThread = HandlerThread("OutSider-Block")
     private var mHandler: Handler? = null
     private val mBlockRunnable = Runnable {
         val sb = StringBuilder()
@@ -28,7 +26,7 @@ class BlockTracker : ITracker {
         for (s in stackTrace) {
             sb.append("$s".trimIndent()).append("\n")
         }
-        Log.d(SUB_TAG, sb.toString())
+        Log.d(TAG, sb.toString())
         saveBlockInfo(sb.toString())
     }
 
@@ -48,7 +46,7 @@ class BlockTracker : ITracker {
             val info = BlockInfo()
             info.blockStack = stack
             info.blockTime = blockMinTime
-            Log.e("BlockTracker", info.toString())
+            Log.e(TAG, info.toString())
 //                ITask task = Manager.getInstance().getTaskManager().getTask(ApmTask.TASK_BLOCK);
 //                if (task != null) {
 //                    task.save(info);
@@ -79,7 +77,10 @@ class BlockTracker : ITracker {
     override fun pauseTrack(application: Application) {}
 
     companion object {
+        private const val START = ">>>>> Dispatching"
+        private const val END = "<<<<< Finished"
         private const val blockMinTime = 4500
+
         val instance: BlockTracker by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { BlockTracker() }
     }
 }

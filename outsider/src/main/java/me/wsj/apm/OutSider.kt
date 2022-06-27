@@ -15,9 +15,12 @@ import me.wsj.apm.battery.BatteryStatsTracker
 import me.wsj.apm.jank.BlockTracker
 import me.wsj.apm.mem.ITrackMemoryListener
 import me.wsj.apm.mem.MemoryInfo
-import me.wsj.apm.mem.MemoryLeakTrack
+import me.wsj.apm.mem.MemoryTracker
+import me.wsj.apm.thread.ThreadTracker
 import me.wsj.apm.traffic.TrafficListener
 import me.wsj.apm.traffic.TrafficTracker
+
+const val TAG = "OutSider"
 
 class OutSider(val app: Application) : LifecycleEventObserver {
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -25,36 +28,39 @@ class OutSider(val app: Application) : LifecycleEventObserver {
             Lifecycle.Event.ON_CREATE -> {//app is created
                 onAppCreate()
             }
-            Lifecycle.Event.ON_START -> {//when first activity is started
+            Lifecycle.Event.ON_START -> {
                 onAppStart()
             }
-            Lifecycle.Event.ON_STOP -> {//no activities in stack
-                onAppStop()
+            Lifecycle.Event.ON_STOP -> {
+            }
+            Lifecycle.Event.ON_DESTROY -> {//no activities in stack
+                onAppDestory()
+                Log.e(TAG, "ON_DESTROY")
             }
         }
     }
 
     fun onAppCreate() {
-        Log.e("OutSider", "onAppCreate")
-    }
+        Log.e(TAG, "onAppCreate")
+        // 线程
+        ThreadTracker.instance.startTrack(app)
 
-    fun onAppStart() {
-
-        MemoryLeakTrack.instance.addTrackerListener(object : ITrackMemoryListener {
+        // 内存
+        MemoryTracker.instance.addTrackerListener(object : ITrackMemoryListener {
             override fun onLeakActivity(activity: String, count: Int) {
-                Log.e("OutSider", "onLeakActivity: " + activity + " $count")
+                Log.e(TAG, "onLeakActivity: " + activity + " $count")
             }
 
             override fun onCurrentMemoryCost(trackMemoryInfo: MemoryInfo?) {
-                Log.e("OutSider", "CurrentMemoryCost: " + trackMemoryInfo.toString())
+                Log.e(TAG, "CurrentMemoryCost: " + trackMemoryInfo.toString())
             }
         })
-        MemoryLeakTrack.instance.startTrack(app)
+        MemoryTracker.instance.startTrack(app)
 
         // 流量
         TrafficTracker.instance.addTrackerListener(object : TrafficListener {
             override fun getTrafficStats(activity: Activity?, value: Long) {
-                Log.e("OutSider", "$activity traffic cost: $value")
+                Log.e(TAG, "$activity traffic cost: $value")
             }
         })
         TrafficTracker.instance.startTrack(app)
@@ -68,14 +74,14 @@ class OutSider(val app: Application) : LifecycleEventObserver {
             .setReportAllThreads()
             .setAnrListener(object : AnrListener {
                 override fun onAppNotResponding(error: AnrError) {
-                    Log.e("OutSider", "onAppNotResponding: " + error.toString())
+                    Log.e(TAG, "onAppNotResponding: " + error.toString())
                 }
             }).setAnrInterceptor(object : AnrInterceptor {
                 override fun intercept(duration: Long): Long {
                     val ret = 4L - duration
                     if (ret > 0) {
                         Log.i(
-                            "tag",
+                            TAG,
                             "Intercepted ANR that is too short ($duration ms), postponing for $ret ms."
                         )
                     }
@@ -85,8 +91,16 @@ class OutSider(val app: Application) : LifecycleEventObserver {
         AnrMonitor.instance.startTrack(app)
     }
 
-    fun onAppStop() {
-        MemoryLeakTrack.instance.destroy(app)
+    fun onAppStart() {
+        Log.e(TAG, "onAppStart")
+    }
+
+    fun onAppDestory() {
+        Log.e(TAG, "onAppStop")
+        // 线程
+        ThreadTracker.instance.destroy(app)
+        // 内存
+        MemoryTracker.instance.destroy(app)
         // 流量
         TrafficTracker.instance.destroy(app)
         // 电量

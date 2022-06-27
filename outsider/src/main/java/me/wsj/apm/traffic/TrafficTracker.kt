@@ -6,14 +6,13 @@ import me.wsj.core.ITracker
 import android.app.Application.ActivityLifecycleCallbacks
 import android.net.TrafficStats
 import android.os.Process
-import me.wsj.apm.mem.ITrackMemoryListener
+import android.util.Log
 import me.wsj.core.BaseTracker
 import me.wsj.core.extensions.noOpDelegate
-import java.util.ArrayList
 import java.util.HashMap
 
 class TrafficTracker private constructor() : BaseTracker<TrafficListener>(), ITracker {
-    private val mHashMap = HashMap<Activity, Traffic?>()
+    private val mHashMap = HashMap<Activity, TrafficInfo?>()
     private var mCurrentStats: Long = 0
 
     private val mActivityLifecycleCallbacks: ActivityLifecycleCallbacks =
@@ -33,7 +32,7 @@ class TrafficTracker private constructor() : BaseTracker<TrafficListener>(), ITr
 
     fun markActivityStart(activity: Activity) {
         if (mHashMap[activity] == null) {
-            val item = Traffic()
+            val item = TrafficInfo()
             item.activity = activity
             item.sequence = sSequence++
             item.trafficCost = 0

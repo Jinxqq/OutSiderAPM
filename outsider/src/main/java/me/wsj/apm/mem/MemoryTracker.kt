@@ -13,9 +13,9 @@ import me.wsj.core.extensions.noOpDelegate
 import java.lang.Exception
 import java.util.*
 
-class MemoryLeakTrack private constructor() : BaseTracker<ITrackMemoryListener>(), ITracker {
+class MemoryTracker private constructor() : BaseTracker<ITrackMemoryListener>(), ITracker {
 
-    private val handlerThread = HandlerThread("MemoryLeakTrack", Thread.NORM_PRIORITY)
+    private val handlerThread = HandlerThread("OutSider-Memory", Thread.NORM_PRIORITY)
 
     private val mHandler: Handler
 
@@ -100,8 +100,8 @@ class MemoryLeakTrack private constructor() : BaseTracker<ITrackMemoryListener>(
 
 
     companion object {
-        private const val MONITOR_INTERVAL: Long = 301000
+        private const val MONITOR_INTERVAL: Long = 30_1000
 
-        val instance: MemoryLeakTrack by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { MemoryLeakTrack() }
+        val instance: MemoryTracker by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { MemoryTracker() }
     }
 }

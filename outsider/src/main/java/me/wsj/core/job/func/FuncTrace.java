@@ -4,6 +4,9 @@ package me.wsj.core.job.func;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import me.wsj.apm.OutSiderKt;
+
 /**
  * @author OutSiderAPM
  */
@@ -25,7 +28,7 @@ public class FuncTrace {
                                              String staticPartStr, String methodName, Object result) {
         long cost = System.currentTimeMillis() - startTime;
 
-        Log.d("FuncTrace", String.format(
+        Log.d(OutSiderKt.TAG, String.format(
                 "info [cost:%sms, kind:%s, sign:%s, target:%s, this: %s, location:%s, StaticPart:%s]",
                 cost,
                 kind,

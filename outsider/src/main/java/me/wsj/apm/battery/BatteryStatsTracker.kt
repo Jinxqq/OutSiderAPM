@@ -24,7 +24,7 @@ class BatteryStatsTracker private constructor() : BaseTracker<IBatteryListener>(
     private val handlerThread: HandlerThread
 
     init {
-        handlerThread = HandlerThread("BatteryStats", Thread.NORM_PRIORITY)
+        handlerThread = HandlerThread("OutSider-Battery", Thread.NORM_PRIORITY)
         handlerThread.start()
         mHandler = Handler(handlerThread.looper)
     }
@@ -56,7 +56,7 @@ class BatteryStatsTracker private constructor() : BaseTracker<IBatteryListener>(
                 mHandler.post {
                     val batteryInfo =
                         getBatteryInfo(activity.application, activity.componentName.className)
-                    Log.e("BatteryStatsTracker", batteryInfo.toString())
+                    Log.e(TAG, batteryInfo.toString())
                     if (listeners.size > 0) {
                         for (listener in listeners) {
                             listener.onBatteryCost(batteryInfo)
@@ -91,7 +91,7 @@ class BatteryStatsTracker private constructor() : BaseTracker<IBatteryListener>(
             batteryInfo.activityName = activityName
 //            Log.v("Battery", "total " + batteryInfo.total + " 用时间 " + batteryInfo.duration / 1000 + " 耗电  " + batteryInfo.cost);
         } catch (e: Exception) {
-            Log.e("Battery", e.toString())
+            Log.e(TAG, e.toString())
         }
         return batteryInfo
     }

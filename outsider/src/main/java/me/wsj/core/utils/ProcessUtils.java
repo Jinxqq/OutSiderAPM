@@ -5,11 +5,13 @@ import android.util.Log;
 
 import java.io.FileInputStream;
 
+import me.wsj.apm.OutSiderKt;
+
 /**
  * @author OutSiderAPM
  */
 public class ProcessUtils {
-    private static final String SUB_TAG = "ProcessUtils";
+
     private static String sProcessName = null;
 
     /**
@@ -40,13 +42,13 @@ public class ProcessUtils {
                 return s;
             }
         } catch (Throwable e) {
-            Log.d(SUB_TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
+            Log.d(OutSiderKt.TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (Throwable e) {
-                    Log.d(SUB_TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
+                    Log.d(OutSiderKt.TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
                 }
             }
         }

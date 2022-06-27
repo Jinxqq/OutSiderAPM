@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
-import me.wsj.apm.traffic.TrafficTracker
 import me.wsj.core.ITracker
 
 class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITracker {
@@ -49,7 +48,7 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITra
         if (mTick != 0L && !mReported) {
             //noinspection ConstantConditions
             if (!mIgnoreDebugger && (Debug.isDebuggerConnected() || Debug.waitingForDebugger())) {
-                Log.i("tag","An ANR was detected but ignored because the debugger is connected (you can prevent this with setIgnoreDebugger(true))")
+                Log.i(TAG,"An ANR was detected but ignored because the debugger is connected (you can prevent this with setIgnoreDebugger(true))")
                 mReported = true
                 delayToTryCollectingAnr()
                 return@Runnable
@@ -73,7 +72,7 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITra
 
     fun setAnrListener(anrListener: AnrListener?): AnrMonitor {
         mAnrListener = anrListener ?: DEFAULT_ANR_LISTENER
-        Log.i("AnrMonitor", "setAnrListener-----")
+        Log.i(TAG, "setAnrListener-----")
         return this
     }
 
@@ -155,7 +154,7 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITra
     companion object {
         const val DEFAULT_ANR_TIMEOUT = 5000L
         const val ANR_COLLECTING_INTERVAL = 2000L
-        private const val TAG = "||ANR-Monitor||"
+        private const val TAG = "OutSider-ANR"
 
         private val DEFAULT_ANR_LISTENER = object : AnrListener {
             override fun onAppNotResponding(error: AnrError) {
