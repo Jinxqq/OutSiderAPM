@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes
 /**
  * 类型判断工具类，用来区分是否是某个特定的类型
  *
- * @author ArgusAPM Team
+ * @author OutSiderAPM
  */
 class TypeUtil {
 

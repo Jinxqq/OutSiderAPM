@@ -13,7 +13,7 @@ class Okhttp3MethodAdapter(private val methodName: String, api: Int, access: Int
         if (isReturn(opcode) && TypeUtil.isOkhttpClientBuild(methodName, desc)) {
             mv.visitVarInsn(ALOAD, 0)
             mv.visitFieldInsn(GETFIELD, "okhttp3/OkHttpClient\$Builder", "interceptors", "Ljava/util/List;")
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/wsj/traffic/okhttp/OkHttpUtils", "insertToOkHttpClientBuilder", "(Ljava/util/List;)V", false)
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "me/wsj/apm/traffic/okhttp/OkHttpUtils", "insertToOkHttpClientBuilder", "(Ljava/util/List;)V", false)
         }
         super.visitInsn(opcode)
     }

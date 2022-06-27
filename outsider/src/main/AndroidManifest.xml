@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="me.wsj.core">
+
+    <application>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- This entry makes WorkManagerInitializer discoverable. -->
+            <!-- 如果A依赖了B,则只需要在此处注册A即可。value值必须为"androidx.startup",否则不生效 -->
+            <meta-data
+                android:name="me.wsj.apm.OutSiderInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
+        <provider
+            android:name="me.wsj.apm.battery.LauncherHelpProvider"
+            android:authorities="${applicationId}"
+            android:exported="false"
+            android:multiprocess="true" />
+
+        <receiver android:name="me.wsj.apm.battery.BatteryLevelReceiver" />
+    </application>
+</manifest>

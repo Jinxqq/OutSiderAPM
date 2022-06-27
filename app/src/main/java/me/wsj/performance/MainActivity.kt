@@ -31,12 +31,5 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnNetwork).setOnClickListener {
             startActivity(Intent(this, NetworkActivity::class.java))
         }
-
-        lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                Log.e("Mainactivity", event.toString())
-            }
-        })
     }
-
 }

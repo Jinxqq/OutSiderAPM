@@ -35,13 +35,6 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="me.wsj.batterycheck.LauncherHelpProvider"
-            android:authorities="${applicationId}"
-            android:exported="false"
-            android:multiprocess="true" />
-
-        <receiver android:name="me.wsj.batterycheck.BatteryLevelReceiver" />
     </application>
 
 </manifest>

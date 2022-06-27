@@ -19,7 +19,7 @@ class WebViewActivity extends AppCompatActivity {
 
         WebView webView = findViewById(R.id.webView);
 //        webView.loadUrl("https://gitstar.com.cn/")
-        String url = "https://www.baidu.com/";
+        String url = "http://fengyun.icu/";
         webView.loadUrl(url);
         webView.getSettings().setJavaScriptEnabled(true);
 

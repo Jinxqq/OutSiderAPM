@@ -8,9 +8,4 @@
 }*/
 rootProject.name = "OutSiderAPM"
 include ':app'
-include ':anrcheck'
-include ':batterycheck'
-include ':mem'
-include ':core'
-include ':traffic'
-include ':jank'
+include ':outsider'
