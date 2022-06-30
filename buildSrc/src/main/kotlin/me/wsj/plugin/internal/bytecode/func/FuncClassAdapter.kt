@@ -15,7 +15,7 @@ class FuncClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) 
         signature: String?,
         exceptions: Array<out String>?
     ): MethodVisitor {
-        if (isInterface || !isNeedWeaveMethod(className, access)) {
+        if (isInterface || !isNeedWeaveMethod(className, access) || specialExclude(className)) {
             return super.visitMethod(access, name, desc, signature, exceptions);
         }
 
@@ -24,5 +24,9 @@ class FuncClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) 
             return FuncMethodAdapter(className.replace("/", "."), name, desc, api, access, desc, mv)
         }
         return mv
+    }
+
+    fun specialExclude(className: String): Boolean {
+        return className.startsWith("me/wsj/apm".replace(".", "/"))
     }
 }

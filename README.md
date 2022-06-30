@@ -1,15 +1,14 @@
 
 
+## **OutSiderAPM移动性能监控平台**
 
-**OutSiderAPM移动性能监控平台**
-
-**项目优势**
+### **项目优势**
 
 - 实时掌控应用性能
 - 降低性能定位成本
 - 有效提升用户体验
 
-**监控模块**
+### **监控模块**
 
 OutSiderAPM目前支持如下性能指标：
 
@@ -21,7 +20,7 @@ OutSiderAPM目前支持如下性能指标：
 - 卡顿分析：监控并发现卡顿原因，代码堆栈精准定位问题，解决明显的卡顿体验
 - ANR分析：捕获ANR异常，解决APP的“未响应”问题
 
-**OutSiderAPM特性**
+### **OutSiderAPM特性**
 
 - **非侵入式**
 
@@ -51,3 +50,21 @@ OutSiderAPM目前支持如下性能指标：
 
 ​	OutSiderAPM使用wifi状态下上传性能数据，这样避免了频繁网络请求带来的耗电问题及用户流量的消耗。
 
+
+
+
+
+### **Usage**
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+	implementation 'com.gitee.HappyAndroid666:OutSiderAPM:1.0.0'
+}
+```

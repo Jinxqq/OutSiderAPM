@@ -144,7 +144,7 @@ public class NetWorkInterceptor implements Interceptor {
                     e.printStackTrace();
                 }
 
-                Buffer buffer = source.getBuffer();
+                Buffer buffer = source.buffer();
                 contentLength = buffer.size();
 
 //                if (DEBUG) {
