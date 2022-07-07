@@ -65,6 +65,6 @@ allprojects {
 }
 
 dependencies {
-	implementation 'com.gitee.HappyAndroid666:OutSiderAPM:1.0.0'
+	implementation 'com.gitee.HappyAndroid666:OutSiderAPM:1.0.4'
 }
 ```
