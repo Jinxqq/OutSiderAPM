@@ -1,9 +1,8 @@
 package me.wsj.apm.traffic.okhttp;
 
 import android.text.TextUtils;
-import android.util.Log;
-
 import me.wsj.apm.OutSiderKt;
+import me.wsj.core.utils.Looger;
 
 /**
  * 具体实现逻辑，位于mobile module中
@@ -22,7 +21,7 @@ public class DataRecordUtils {
             return;
         }
 
-        Log.e(OutSiderKt.TAG, okHttpData.toString());
+        Looger.e(OutSiderKt.TAG, okHttpData.toString());
 //        QOKHttp.recordUrlRequest(okHttpData.url, okHttpData.code, okHttpData.requestSize,
 //                okHttpData.responseSize, okHttpData.startTime, okHttpData.costTime);
 //

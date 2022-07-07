@@ -11,20 +11,18 @@ import android.os.HandlerThread
 import android.os.SystemClock
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.Log
-import me.wsj.apm.traffic.TrafficListener
 import me.wsj.core.BaseTracker
 import me.wsj.core.ITracker
 import me.wsj.core.extensions.noOpDelegate
+import me.wsj.core.utils.Looger
 
 class BatteryStatsTracker private constructor() : BaseTracker<IBatteryListener>(), ITracker {
     private val mHandler: Handler
     private var display: String? = null
     private var mStartPercent = 0
-    private val handlerThread: HandlerThread
+    private val handlerThread = HandlerThread("OutSider-Battery", Thread.NORM_PRIORITY)
 
     init {
-        handlerThread = HandlerThread("OutSider-Battery", Thread.NORM_PRIORITY)
         handlerThread.start()
         mHandler = Handler(handlerThread.looper)
     }
@@ -56,7 +54,7 @@ class BatteryStatsTracker private constructor() : BaseTracker<IBatteryListener>(
                 mHandler.post {
                     val batteryInfo =
                         getBatteryInfo(activity.application, activity.componentName.className)
-                    Log.e(TAG, batteryInfo.toString())
+                    Looger.e(TAG, batteryInfo.toString())
                     if (listeners.size > 0) {
                         for (listener in listeners) {
                             listener.onBatteryCost(batteryInfo)
@@ -91,7 +89,7 @@ class BatteryStatsTracker private constructor() : BaseTracker<IBatteryListener>(
             batteryInfo.activityName = activityName
 //            Log.v("Battery", "total " + batteryInfo.total + " 用时间 " + batteryInfo.duration / 1000 + " 耗电  " + batteryInfo.cost);
         } catch (e: Exception) {
-            Log.e(TAG, e.toString())
+            Looger.e(TAG, e.toString())
         }
         return batteryInfo
     }

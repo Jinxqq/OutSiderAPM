@@ -1,11 +1,11 @@
 package me.wsj.apm.traffic.okhttp;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.IOException;
 
 import me.wsj.apm.OutSiderKt;
+import me.wsj.core.utils.Looger;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -38,7 +38,7 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.startTime = startNs;
 
         if (DEBUG) {
-            Log.d(OutSiderKt.TAG, "okhttp request 开始时间：" + mOkHttpData.startTime);
+            Looger.d(OutSiderKt.TAG, "okhttp request 开始时间：" + mOkHttpData.startTime);
         }
 
         Request request = chain.request();
@@ -52,7 +52,7 @@ public class NetWorkInterceptor implements Interceptor {
         } catch (IOException e) {
             if (DEBUG) {
                 e.printStackTrace();
-                Log.e(OutSiderKt.TAG, "HTTP FAILED: " + e);
+                Looger.e(OutSiderKt.TAG, "HTTP FAILED: " + e);
             }
             throw e;
         }
@@ -60,13 +60,13 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.costTime = System.currentTimeMillis() - startNs;
 
         if (DEBUG) {
-            Log.d(OutSiderKt.TAG, "okhttp chain.proceed 耗时：" + mOkHttpData.costTime);
+            Looger.d(OutSiderKt.TAG, "okhttp chain.proceed 耗时：" + mOkHttpData.costTime);
         }
 
         recordResponse(response);
 
         if (DEBUG) {
-            Log.d(OutSiderKt.TAG, "okhttp chain.proceed end.");
+            Looger.d(OutSiderKt.TAG, "okhttp chain.proceed end.");
         }
 
         DataRecordUtils.recordUrlRequest(mOkHttpData);
@@ -87,7 +87,7 @@ public class NetWorkInterceptor implements Interceptor {
         if (requestBody == null) {
             mOkHttpData.requestSize = request.url().toString().getBytes().length;
             if (DEBUG) {
-                Log.d(OutSiderKt.TAG, "okhttp request 上行数据，大小：" + mOkHttpData.requestSize);
+                Looger.d(OutSiderKt.TAG, "okhttp request 上行数据，大小：" + mOkHttpData.requestSize);
             }
             return;
         }
@@ -117,7 +117,7 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.code = response.code();
 
         if (DEBUG) {
-            Log.d(OutSiderKt.TAG, "okhttp chain.proceed 状态码：" + mOkHttpData.code);
+            Looger.d(OutSiderKt.TAG, "okhttp chain.proceed 状态码：" + mOkHttpData.code);
         }
 
         if (!response.isSuccessful()) {
@@ -133,7 +133,7 @@ public class NetWorkInterceptor implements Interceptor {
 
         if (contentLength > 0) {
             if (DEBUG) {
-                Log.d(OutSiderKt.TAG, "直接通过responseBody取到contentLength:" + contentLength);
+                Looger.d(OutSiderKt.TAG, "直接通过responseBody取到contentLength:" + contentLength);
             }
         } else {
             BufferedSource source = responseBody.source();
@@ -156,7 +156,7 @@ public class NetWorkInterceptor implements Interceptor {
         mOkHttpData.responseSize = contentLength;
 
         if (DEBUG) {
-            Log.d(OutSiderKt.TAG, "okhttp 接收字节数：" + mOkHttpData.responseSize);
+            Looger.d(OutSiderKt.TAG, "okhttp 接收字节数：" + mOkHttpData.responseSize);
         }
     }
 }

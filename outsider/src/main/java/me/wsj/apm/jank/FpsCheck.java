@@ -1,11 +1,9 @@
 package me.wsj.apm.jank;
 
-import android.os.Build;
-import android.util.Log;
 import android.view.Choreographer;
-import android.view.SurfaceView;
 
 import me.wsj.apm.OutSiderKt;
+import me.wsj.core.utils.Looger;
 
 public class FpsCheck {
     private long mStartFrameTime = 0;
@@ -24,7 +22,7 @@ public class FpsCheck {
                 float interval = (timeNanos - mStartFrameTime) / 1000000.0f;
                 if (interval > MONITOR_INTERVAL) {
                     double fps = (mStartFrameCount * 1000L) / interval;
-                    Log.e(OutSiderKt.TAG, "fps" + fps);
+                    Looger.e(OutSiderKt.TAG, "fps" + fps);
                     mStartFrameCount = 0;
                     mStartFrameTime = 0;
                 } else {

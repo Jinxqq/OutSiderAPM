@@ -6,6 +6,7 @@ import android.os.HandlerThread
 import android.util.Log
 import me.wsj.apm.TAG
 import me.wsj.core.ITracker
+import me.wsj.core.utils.Looger
 
 class ThreadTracker : ITracker {
 
@@ -26,10 +27,10 @@ class ThreadTracker : ITracker {
     override fun startTrack(application: Application?) {
         mHandler.postDelayed(object : Runnable {
             override fun run() {
-                Log.e(TAG, "current thread cnt: " + Thread.getAllStackTraces().size)
+                Looger.e(TAG, "current thread cnt: " + Thread.getAllStackTraces().size)
                 val allStackTraces = Thread.getAllStackTraces()
                 allStackTraces.keys.forEach {
-                    Log.d(TAG, it.name + " state:" + it.state)
+                    Looger.d(TAG, it.name + " state:" + it.state)
                 }
                 mHandler.postDelayed(this, MONITOR_INTERVAL)
             }
@@ -44,6 +45,6 @@ class ThreadTracker : ITracker {
         private const val MONITOR_START_DELAY: Long = 1 * 1000
         private const val MONITOR_INTERVAL: Long = 20 * 1000
 
-        val instance: ThreadTracker by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { ThreadTracker() }
+        val instance: ThreadTracker by lazy { ThreadTracker() }
     }
 }

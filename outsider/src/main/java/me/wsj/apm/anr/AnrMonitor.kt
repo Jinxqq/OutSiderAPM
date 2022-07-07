@@ -5,8 +5,8 @@ import android.os.Debug
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
-import android.util.Log
 import me.wsj.core.ITracker
+import me.wsj.core.utils.Looger
 
 class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITracker {
     private val mainHandler: Handler = Handler(Looper.getMainLooper())
@@ -48,7 +48,7 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITra
         if (mTick != 0L && !mReported) {
             //noinspection ConstantConditions
             if (!mIgnoreDebugger && (Debug.isDebuggerConnected() || Debug.waitingForDebugger())) {
-                Log.i(TAG,"An ANR was detected but ignored because the debugger is connected (you can prevent this with setIgnoreDebugger(true))")
+                Looger.i(TAG,"An ANR was detected but ignored because the debugger is connected (you can prevent this with setIgnoreDebugger(true))")
                 mReported = true
                 delayToTryCollectingAnr()
                 return@Runnable
@@ -72,7 +72,7 @@ class AnrMonitor(private val timeoutInterval: Long = DEFAULT_ANR_TIMEOUT) : ITra
 
     fun setAnrListener(anrListener: AnrListener?): AnrMonitor {
         mAnrListener = anrListener ?: DEFAULT_ANR_LISTENER
-        Log.i(TAG, "setAnrListener-----")
+        Looger.i(TAG, "setAnrListener-----")
         return this
     }
 

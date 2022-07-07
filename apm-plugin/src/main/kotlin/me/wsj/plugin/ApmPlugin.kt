@@ -1,7 +1,6 @@
 package me.wsj.plugin
 
 import com.android.build.gradle.AppExtension
-import com.argusapm.gradle.AppConstant
 import me.wsj.plugin.internal.BuildTimeListener
 import me.wsj.plugin.internal.PluginConfig
 import org.gradle.api.Plugin

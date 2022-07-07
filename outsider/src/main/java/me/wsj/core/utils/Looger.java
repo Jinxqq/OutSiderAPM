@@ -1,4 +1,4 @@
-package me.wsj.performance.utils;
+package me.wsj.core.utils;
 
 import android.util.Log;
 

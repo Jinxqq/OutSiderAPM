@@ -42,13 +42,13 @@ public class ProcessUtils {
                 return s;
             }
         } catch (Throwable e) {
-            Log.d(OutSiderKt.TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
+            Looger.d(OutSiderKt.TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (Throwable e) {
-                    Log.d(OutSiderKt.TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
+                    Looger.d(OutSiderKt.TAG, "getCurrentProcessName: got exception: " + Log.getStackTraceString(e));
                 }
             }
         }

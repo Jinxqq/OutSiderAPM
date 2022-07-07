@@ -32,8 +32,8 @@ open class OutSiderApmConfig {
         excludes.add("org/intellij/")
         excludes.add("kotlin/")
         excludes.add("com/google/android/")
-        //排除ArgusAPM自身代码的注入
-//        excludes.add("com/argusapm/android/")
+        //排除OutSiderAPM自身代码的注入
+        excludes.add("me/wsj/core/utils/Looger/")
 
         //该类参与代码的织入
         includes.add("okhttp3/OkHttpClient\$Builder")

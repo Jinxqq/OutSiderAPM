@@ -9,6 +9,7 @@ import android.util.Printer
 import me.wsj.apm.TAG
 import me.wsj.core.ITracker
 import me.wsj.core.job.AsyncThreadTask
+import me.wsj.core.utils.Looger
 
 /**
  * 卡顿模块Task
@@ -26,7 +27,7 @@ class BlockTracker : ITracker {
         for (s in stackTrace) {
             sb.append("$s".trimIndent()).append("\n")
         }
-        Log.d(TAG, sb.toString())
+        Looger.d(TAG, sb.toString())
         saveBlockInfo(sb.toString())
     }
 
@@ -46,7 +47,7 @@ class BlockTracker : ITracker {
             val info = BlockInfo()
             info.blockStack = stack
             info.blockTime = blockMinTime
-            Log.e(TAG, info.toString())
+            Looger.e(TAG, info.toString())
 //                ITask task = Manager.getInstance().getTaskManager().getTask(ApmTask.TASK_BLOCK);
 //                if (task != null) {
 //                    task.save(info);

@@ -2,7 +2,6 @@ package me.wsj.plugin.internal.bytecode.log
 
 import me.wsj.plugin.internal.MethodDetail
 import me.wsj.plugin.utils.TypeUtil
-import me.wsj.plugin.utils.log
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.commons.AdviceAdapter
 
@@ -34,7 +33,7 @@ class LogMethodAdapter(
 
     private fun getDestMethod(method: String): MethodDetail {
         return MethodDetail(
-            "me/wsj/performance/utils/Looger",
+            "me/wsj/core/utils/Looger",
             method,
             "(Ljava/lang/String;Ljava/lang/String;)I"
         )

@@ -1,0 +1,61 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+sourceCompatibility = 1.8
+
+signing {
+    sign configurations.archives
+}
+
+group = 'me.wsj.plugin'
+archivesBaseName = 'apm-plugin'
+version = '1.0.0'
+//if(isSNAPSHOT){
+//    version+="-SNAPSHOT"
+//}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment {
+                MavenDeployment deployment -> signing.signPom(deployment)
+            }
+
+            repository(url: "https://s01.oss.sonatype.org/content/repositories/releases/") {
+                authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+            }
+
+            pom.project {
+                name 'apm-plugin'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'apm'
+                url 'https://github.com/Jinxqq/OutSiderAPM'
+
+//                scm {
+//                    connection 'scm:git:git@gitee.com:vvv.git'
+//                    developerConnection 'scm:git:git@github.com:Jinxqq.OutSiderAPM.git'
+//                    url 'https://github.com/Jinxqq/OutSiderAPM'
+//                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'shiju.wang'
+                        name 'shiju.wang'
+                        email '1521192337@qq.com'
+                    }
+                }
+            }
+        }
+    }
+}

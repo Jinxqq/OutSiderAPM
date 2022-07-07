@@ -9,3 +9,4 @@
 rootProject.name = "OutSiderAPM"
 include ':app'
 include ':outsider'
+include ':apm-plugin'

@@ -1,8 +1,8 @@
-package com.argusapm.gradle
+package me.wsj.plugin
 
 object AppConstant {
     /** 版本号 */
-    const val VER = "3.0.1.1001"
+    const val VER = "1.0.2"
 
     /** 打印信息时候的前缀 */
     const val TAG = "< outsider-apm-v$VER >"

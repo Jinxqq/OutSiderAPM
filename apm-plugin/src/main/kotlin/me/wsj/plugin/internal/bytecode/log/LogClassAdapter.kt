@@ -15,11 +15,17 @@ class LogClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
         signature: String?,
         exceptions: Array<out String>?
     ): MethodVisitor {
-        if (isInterface || !TypeUtil.isNeedWeaveMethod(className, access)) {
-            return super.visitMethod(access, name, desc, signature, exceptions);
+        if (isInterface || !TypeUtil.isNeedWeaveMethod(className, access)
+            || specialExclude(className)) {
+            return super.visitMethod(access, name, desc, signature, exceptions)
         }
         val methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions)
 //        log("LogClassAdapter3 -> " + className + " - " + name + " - " + desc)
         return LogMethodAdapter(className, name, desc, api, access, methodVisitor)
+    }
+
+    fun specialExclude(className: String): Boolean {
+        return className.startsWith("me/wsj/apm".replace(".", "/"))
+                || className.startsWith("me/wsj/core".replace(".", "/"))
     }
 }

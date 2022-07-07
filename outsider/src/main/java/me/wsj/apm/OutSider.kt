@@ -2,7 +2,6 @@ package me.wsj.apm
 
 import android.app.Activity
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -19,6 +18,7 @@ import me.wsj.apm.mem.MemoryTracker
 import me.wsj.apm.thread.ThreadTracker
 import me.wsj.apm.traffic.TrafficListener
 import me.wsj.apm.traffic.TrafficTracker
+import me.wsj.core.utils.Looger
 
 const val TAG = "OutSider"
 
@@ -35,24 +35,25 @@ class OutSider(val app: Application) : LifecycleEventObserver {
             }
             Lifecycle.Event.ON_DESTROY -> {//no activities in stack
                 onAppDestory()
-                Log.e(TAG, "ON_DESTROY")
+                Looger.e(TAG, "ON_DESTROY")
             }
+            else -> {}
         }
     }
 
     fun onAppCreate() {
-        Log.e(TAG, "onAppCreate")
+        Looger.e(TAG, "onAppCreate")
         // 线程
         ThreadTracker.instance.startTrack(app)
 
         // 内存
         MemoryTracker.instance.addTrackerListener(object : ITrackMemoryListener {
             override fun onLeakActivity(activity: String, count: Int) {
-                Log.e(TAG, "onLeakActivity: " + activity + " $count")
+                Looger.e(TAG, "onLeakActivity: $activity $count")
             }
 
             override fun onCurrentMemoryCost(trackMemoryInfo: MemoryInfo?) {
-                Log.e(TAG, "CurrentMemoryCost: " + trackMemoryInfo.toString())
+                Looger.e(TAG, "CurrentMemoryCost: " + trackMemoryInfo.toString())
             }
         })
         MemoryTracker.instance.startTrack(app)
@@ -60,7 +61,7 @@ class OutSider(val app: Application) : LifecycleEventObserver {
         // 流量
         TrafficTracker.instance.addTrackerListener(object : TrafficListener {
             override fun getTrafficStats(activity: Activity?, value: Long) {
-                Log.e(TAG, "$activity traffic cost: $value")
+                Looger.e(TAG, "$activity traffic cost: $value")
             }
         })
         TrafficTracker.instance.startTrack(app)
@@ -74,13 +75,13 @@ class OutSider(val app: Application) : LifecycleEventObserver {
             .setReportAllThreads()
             .setAnrListener(object : AnrListener {
                 override fun onAppNotResponding(error: AnrError) {
-                    Log.e(TAG, "onAppNotResponding: " + error.toString())
+                    Looger.e(TAG, "onAppNotResponding: $error")
                 }
             }).setAnrInterceptor(object : AnrInterceptor {
                 override fun intercept(duration: Long): Long {
                     val ret = 4L - duration
                     if (ret > 0) {
-                        Log.i(
+                        Looger.i(
                             TAG,
                             "Intercepted ANR that is too short ($duration ms), postponing for $ret ms."
                         )
@@ -92,11 +93,11 @@ class OutSider(val app: Application) : LifecycleEventObserver {
     }
 
     fun onAppStart() {
-        Log.e(TAG, "onAppStart")
+        Looger.e(TAG, "onAppStart")
     }
 
     fun onAppDestory() {
-        Log.e(TAG, "onAppStop")
+        Looger.e(TAG, "onAppStop")
         // 线程
         ThreadTracker.instance.destroy(app)
         // 内存

@@ -1,12 +1,12 @@
 package me.wsj.core.job.webview;
 
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.wsj.apm.OutSiderKt;
+import me.wsj.core.utils.Looger;
 
 /**
  * https://www.jianshu.com/p/b908acf1d3a0
@@ -52,11 +52,11 @@ public class JSBridge {
             destObject.put("pt", System.currentTimeMillis());
             destObject.put("rs", source.getLong("responseStart"));
             destObject.put("u", url);
-            Log.e(OutSiderKt.TAG, "dispatchToAopWebTrace: " + destObject.toString());
+            Looger.e(OutSiderKt.TAG, "dispatchToAopWebTrace: " + destObject.toString());
 //            AopWebTrace.dispatch(destObject);
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(OutSiderKt.TAG, "Method: addJavascriptInterface()" + e.getMessage());
+            Looger.e(OutSiderKt.TAG, "Method: addJavascriptInterface()" + e.getMessage());
         }
     }
 }
