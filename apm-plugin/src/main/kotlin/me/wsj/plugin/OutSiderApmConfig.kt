@@ -5,6 +5,8 @@ open class OutSiderApmConfig {
     var logReplaceEnabled: Boolean = true
     var okhttpEnabled: Boolean = true
     var funcEnabled: Boolean = true
+    var threadTrackerEnabled: Boolean = true
+    var threadEnabled: Boolean = true
     var netEnabled: Boolean = true
     var ioEnabled: Boolean = true
     var powerEnabled: Boolean = true
@@ -26,7 +28,7 @@ open class OutSiderApmConfig {
         excludes.add("androidx/")
         excludes.add("sun/")
         excludes.add("com/sun/")
-        excludes.add("okhttp3/")
+//        excludes.add("okhttp3/")
         excludes.add("okio/")
         excludes.add("org/apache/")
         excludes.add("org/intellij/")

@@ -1,12 +1,8 @@
 package me.wsj.performance.ui;
 
-import android.graphics.Bitmap;
-import android.util.Log;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import me.wsj.core.job.webview.JSBridge;
 
 public class MyWebViewClient extends WebViewClient {
 

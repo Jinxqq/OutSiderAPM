@@ -8,8 +8,9 @@ import java.io.File
 /**
  * reference: https://juejin.cn/post/7074762489736478757#heading-18
  */
-class FdTracker {
-    private fun dumpFd() {
+object FdTracker {
+
+    fun dumpFd() {
         val fdNames = runCatching { File("/proc/self/fd").listFiles() }
             .getOrElse {
                 return@getOrElse emptyArray()
@@ -19,7 +20,6 @@ class FdTracker {
             }
             ?: emptyList()
 
-        Looger.d("TAG", "dumpFd: size=${fdNames.size},fdNames=$fdNames")
-
+        Looger.e("dumpFd: size=${fdNames.size},fdNames=$fdNames")
     }
 }

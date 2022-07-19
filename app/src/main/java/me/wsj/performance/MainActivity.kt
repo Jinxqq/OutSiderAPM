@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.lifecycle.*
 import me.wsj.performance.ui.FuncActivity
 import me.wsj.performance.ui.NetworkActivity
+import me.wsj.performance.ui.ThreadActivity
 import me.wsj.performance.ui.WebViewActivity
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +32,10 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnNetwork).setOnClickListener {
             startActivity(Intent(this, NetworkActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.tvThread).setOnClickListener {
+            startActivity(Intent(this, ThreadActivity::class.java))
         }
     }
 }

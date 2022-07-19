@@ -18,6 +18,7 @@ import me.wsj.apm.mem.MemoryTracker
 import me.wsj.apm.thread.ThreadTracker
 import me.wsj.apm.traffic.TrafficListener
 import me.wsj.apm.traffic.TrafficTracker
+import me.wsj.core.job.webview.ShadowWebView
 import me.wsj.core.utils.Looger
 
 const val TAG = "OutSider"
@@ -90,6 +91,9 @@ class OutSider(val app: Application) : LifecycleEventObserver {
                 }
             })
         AnrMonitor.instance.startTrack(app)
+
+        // webview内核初始化
+        ShadowWebView.preloadWebView(app)
     }
 
     fun onAppStart() {

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import me.wsj.core.job.webview.JSBridge
 import me.wsj.performance.R
 
 

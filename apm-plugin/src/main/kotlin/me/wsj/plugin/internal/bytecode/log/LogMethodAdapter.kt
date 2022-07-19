@@ -21,9 +21,11 @@ class LogMethodAdapter(
         isInterface: Boolean
     ) {
         if (TypeUtil.isLogMethod(owner, descriptor)) {
-//            System.out.println("-------- isTargetLog --------");
 //            System.out.println(className + " owner: " + owner + "  name: " + name + "   descriptor: " + descriptor);
             val (owner1, name1, descriptor1) = getDestMethod(name)
+            super.visitMethodInsn(INVOKESTATIC, owner1, name1, descriptor1, false)
+        } else if (isCibLog(owner, descriptor)) {
+            val (owner1, name1, descriptor1) = getDestMethod2(name)
             super.visitMethodInsn(INVOKESTATIC, owner1, name1, descriptor1, false)
         } else {
 //            System.out.println("- owner: " + owner + "  name: " + name);
@@ -36,6 +38,18 @@ class LogMethodAdapter(
             "me/wsj/core/utils/Looger",
             method,
             "(Ljava/lang/String;Ljava/lang/String;)I"
+        )
+    }
+
+    private fun isCibLog(owner: String, descriptor: String): Boolean {
+        return owner == "com/orhanobut/logger/Logger" && descriptor == "(Ljava/lang/String;[Ljava/lang/Object;)V"
+    }
+
+    private fun getDestMethod2(method: String): MethodDetail {
+        return MethodDetail(
+            "me/wsj/core/utils/CibLogger",
+            method,
+            "(Ljava/lang/String;[Ljava/lang/Object;)V"
         )
     }
 }

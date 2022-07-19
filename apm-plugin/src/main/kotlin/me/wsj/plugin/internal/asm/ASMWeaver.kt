@@ -5,6 +5,8 @@ import me.wsj.plugin.internal.PluginConfig
 import me.wsj.plugin.internal.bytecode.func.FuncClassAdapter
 import me.wsj.plugin.internal.bytecode.log.LogClassAdapter
 import me.wsj.plugin.internal.bytecode.okhttp3.OkHttp3ClassAdapter
+import me.wsj.plugin.internal.bytecode.thread.ThreadClassAdapter
+import me.wsj.plugin.internal.bytecode.thread.ThreadTrackerClassAdapter
 import me.wsj.plugin.internal.bytecode.webview.WebClassAdapter
 import me.wsj.plugin.internal.concurrent.ITask
 import me.wsj.plugin.internal.concurrent.ThreadPool
@@ -29,10 +31,13 @@ class ASMWeaver {
     fun weaveClass(inputFile: File, outputFile: File) {
         taskManager.addTask(object : ITask {
             override fun call(): Any? {
+//                FileUtils.copyFile(inputFile, outputFile)
                 FileUtils.touch(outputFile)
                 val inputStream = FileInputStream(inputFile)
                 val bytes = weaveSingleClassToByteArray(inputStream)
+                log("byte size0: " + bytes.size)
                 val fos = FileOutputStream(outputFile)
+                log("byte size1: " + bytes.size)
                 fos.write(bytes)
                 fos.close()
                 inputStream.close()
@@ -53,6 +58,15 @@ class ASMWeaver {
 //        if (PluginConfig.outsiderApmConfig().netEnabled) {
 //            classWriterWrapper = NetClassAdapter(Opcodes.ASM8, classWriterWrapper)
 //        }
+//
+        if (PluginConfig.outsiderApmConfig().threadTrackerEnabled) {
+            classWriterWrapper = ThreadTrackerClassAdapter(Opcodes.ASM8, classWriterWrapper)
+        }
+
+        if (PluginConfig.outsiderApmConfig().threadEnabled) {
+            classWriterWrapper = ThreadClassAdapter(Opcodes.ASM8, classWriterWrapper)
+        }
+
 //
         if (PluginConfig.outsiderApmConfig().okhttpEnabled) {
             classWriterWrapper = OkHttp3ClassAdapter(Opcodes.ASM8, classWriterWrapper)

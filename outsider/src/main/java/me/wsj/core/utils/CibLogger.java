@@ -4,9 +4,33 @@ import android.util.Log;
 
 import java.util.Locale;
 
-public class Looger {
+public class CibLogger {
     private static boolean DEBUG = true;
-    public static final String TAG = "wsjLib";
+    public static final String TAG = "cibLog";
+
+
+    public static void d(String message, Object... args) {
+        d(String.format(message, args));
+    }
+
+
+    public static void e(String message, Object... args) {
+        e(String.format(message, args));
+    }
+
+    public static void i(String message, Object... args) {
+        i(String.format(message, args));
+    }
+
+    public static void v(String message, Object... args) {
+        v(TAG, String.format(message, args));
+    }
+
+    public static void w(String message, Object... args) {
+        if (DEBUG) {
+            Log.i(TAG, buildMessage(String.format(message, args)));
+        }
+    }
 
     public static int v(String tag, String msg) {
         if (DEBUG) {
@@ -18,13 +42,6 @@ public class Looger {
     public static int i(String tag, String msg) {
         if (DEBUG) {
             Log.i(tag, buildMessage(msg));
-        }
-        return 0;
-    }
-
-    public static int w(String tag, String msg) {
-        if (DEBUG) {
-            Log.w(tag, buildMessage(msg));
         }
         return 0;
     }
@@ -46,13 +63,6 @@ public class Looger {
     public static int i(String msg) {
         if (DEBUG) {
             Log.i(TAG, buildMessage(msg));
-        }
-        return 0;
-    }
-
-    public static int w(String msg) {
-        if (DEBUG) {
-            Log.w(TAG, buildMessage(msg));
         }
         return 0;
     }
@@ -91,7 +101,7 @@ public class Looger {
         boolean shouldTrace = false;
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (StackTraceElement stackTraceElement : stackTrace) {
-            boolean isLogMethod = stackTraceElement.getClassName().equals(Looger.class.getName());
+            boolean isLogMethod = stackTraceElement.getClassName().equals(CibLogger.class.getName());
             if (shouldTrace && !isLogMethod) {
                 targetStackTrace = stackTraceElement;
                 break;

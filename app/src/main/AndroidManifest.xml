@@ -20,6 +20,9 @@
             android:name=".ui.NetworkActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.ThreadActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.WebViewActivity"
             android:exported="false" />
         <activity
