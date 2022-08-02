@@ -8,7 +8,7 @@ import org.objectweb.asm.commons.AdviceAdapter
 class LogMethodAdapter(
     val className: String,
     methodName: String,
-    methodDesc: String,
+    methodDesc: String?,
     api: Int,
     access: Int,
     mv: MethodVisitor?

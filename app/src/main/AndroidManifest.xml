@@ -21,6 +21,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.ThreadActivity"
+            android:launchMode="singleInstance"
+            android:taskAffinity="me.wsj.performance.Thread"
             android:exported="false" />
         <activity
             android:name=".ui.WebViewActivity"

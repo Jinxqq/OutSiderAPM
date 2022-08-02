@@ -1,6 +1,6 @@
 
 
-## **OutSiderAPM移动性能监控平台**
+## **OutSiderAPM移动性能监控平台（持续开发中）**
 
 ### **项目优势**
 
@@ -65,6 +65,6 @@ allprojects {
 }
 
 dependencies {
-	implementation 'com.gitee.HappyAndroid666:OutSiderAPM:1.0.4'
+	implementation 'com.gitee.HappyAndroid666:OutSiderAPM:1.0.0'
 }
 ```

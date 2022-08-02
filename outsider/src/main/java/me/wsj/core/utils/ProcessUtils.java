@@ -78,7 +78,7 @@ public class ProcessUtils {
                 mRespBuff.append(buff, 0, ch);
             }
             mReader.close();
-            Looger.i("nioTag2", "执行shell2脚本成功 " + mRespBuff.toString());//结果
+//            Looger.i("nioTag2", "执行shell2脚本成功 " + mRespBuff.toString());//结果
             return mRespBuff.toString();
         } catch (IOException e) {
             // TODO Auto-generated catch block

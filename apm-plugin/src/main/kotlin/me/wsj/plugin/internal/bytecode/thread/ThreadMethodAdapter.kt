@@ -8,18 +8,19 @@ import org.objectweb.asm.commons.LocalVariablesSorter
 
 
 class ThreadMethodAdapter(
-    private val methodName: String,
-    private val methodDesc: String,
     api: Int,
     access: Int,
     desc: String?,
     mv: MethodVisitor?
 ) : LocalVariablesSorter(api, access, desc, mv) {
 
+    val shadowThread = "me/wsj/apm/thread/ShadowThread"
+//    val shadowThread = "com/cib/common/threadpool/ShadowThread"
+
     override fun visitTypeInsn(opcode: Int, type: String) {
         if (isNewThread(opcode, type)) {
 //            methodVisitor.visitTypeInsn(NEW, "java/lang/Thread");
-            super.visitTypeInsn(opcode, "me/wsj/apm/thread/ShadowThread")
+            super.visitTypeInsn(opcode, shadowThread)
         } else {
             super.visitTypeInsn(opcode, type)
         }
@@ -34,10 +35,10 @@ class ThreadMethodAdapter(
     ) {
         if (isInitThread(owner, name, descriptor)) {
 //            methodVisitor.visitMethodInsn(INVOKESPECIAL, "me/wsj/apm/thread/ShadowThread", "<init>", "(Ljava/lang/Runnable;)V", false);
-            log("thread: " + owner + " " + name + " " + descriptor)
+//            log("thread: " + owner + " " + name + " " + descriptor)
             super.visitMethodInsn(
                 Opcodes.INVOKESPECIAL,
-                "me/wsj/apm/thread/ShadowThread",
+                shadowThread,
                 "<init>",
                 "(Ljava/lang/Runnable;)V",
                 false

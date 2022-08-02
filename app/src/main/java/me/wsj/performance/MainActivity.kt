@@ -1,13 +1,9 @@
 package me.wsj.performance
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import android.widget.Button
-import android.widget.TextView
-import androidx.lifecycle.*
+import androidx.appcompat.app.AppCompatActivity
 import me.wsj.performance.ui.FuncActivity
 import me.wsj.performance.ui.NetworkActivity
 import me.wsj.performance.ui.ThreadActivity
@@ -37,5 +33,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.tvThread).setOnClickListener {
             startActivity(Intent(this, ThreadActivity::class.java))
         }
+
+//        Observable.create(ObservableOnSubscribe<String> {
+//            it.onNext("123456")
+//        }).subscribeOn(Schedulers.io())
+//            .subscribe {
+//                Log.e("Rxjava", "result: $it")
+//            }
     }
 }

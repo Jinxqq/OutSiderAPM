@@ -37,7 +37,7 @@ class ThreadTracker : ITracker {
 
     var maxCnt = 0
 
-    private fun track() {
+    private fun track(location: String = "") {
         if (Thread.currentThread().name == "main") {
             return
         }
@@ -50,8 +50,8 @@ class ThreadTracker : ITracker {
             val matcher = pattern.matcher(result)
             if (matcher.find()) {
                 val cnt = matcher.group(0)
-                maxCnt = cnt.toInt().coerceAtLeast(maxCnt)
-                Looger.e(TAG, "all thread cnt: $cnt, max: $maxCnt")
+                maxCnt = cnt!!.toInt().coerceAtLeast(maxCnt)
+                Looger.e(TAG, "all thread cnt: $cnt, max: $maxCnt $location")
             }
         }
 //        Looger.e(TAG, "simple thread cnt: " + Thread.getAllStackTraces().size)
@@ -70,8 +70,8 @@ class ThreadTracker : ITracker {
         private const val MONITOR_INTERVAL: Long = 60 * 1000
 
         @JvmStatic
-        fun trackOnce() {
-            instance.track()
+        fun trackOnce(location: String) {
+            instance.track(location)
         }
 
         val instance: ThreadTracker by lazy { ThreadTracker() }

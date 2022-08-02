@@ -8,23 +8,16 @@ import org.objectweb.asm.MethodVisitor
 
 class WebClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
 
+    override fun excludeList(): List<String>? = null
+
     override fun visitMethod(
         access: Int,
         name: String,
-        desc: String,
+        descriptor: String?,
         signature: String?,
-        exceptions: Array<out String>?
+        exceptions: Array<out String>?,
+        mv: MethodVisitor
     ): MethodVisitor {
-        if (isInterface || !TypeUtil.isNeedWeaveMethod(className, access)) {
-            return super.visitMethod(access, name, desc, signature, exceptions);
-        }
-
-        val mv = cv.visitMethod(access, name, desc, signature, exceptions)
-//        if (TypeUtil.isOnPageFinishedMethod(name, desc)) {
-//            if (mv != null) {
-//                return WebMethodAdapter(name, desc, api, access, desc, mv)
-//            }
-//        }
-        return WebMethodAdapter(name, desc, api, access, mv)
+        return WebMethodAdapter(name, descriptor, api, access, mv)
     }
 }

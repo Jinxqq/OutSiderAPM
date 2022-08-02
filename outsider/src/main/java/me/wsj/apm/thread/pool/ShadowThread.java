@@ -1,44 +1,10 @@
-package me.wsj.apm.thread;
+package me.wsj.apm.thread.pool;
 
-import android.util.Log;
-
-import me.wsj.core.utils.Looger;
-
+/**
+ * @author johnsonlee
+ */
 public class ShadowThread extends Thread {
 
-    /*public ShadowThread(Runnable target) {
-        super(target);
-    }
-
-    @Override
-    public synchronized void start() {
-        String name = getName();
-        Looger.i("OutSider", "ShadowThread.start() ,name=" + name);
-        CibThreadPool.getInstance().getIoTasks().execute(new MyRunnable(name));
-    }
-
-    class MyRunnable implements Runnable {
-
-        String name;
-
-        public MyRunnable(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public void run() {
-            try {
-                ShadowThread.this.run();
-                Log.d("ShadowThread", "run name=" + name);
-            } catch (Exception e) {
-                Log.w("ShadowThread", "name=" + name + ",exception:" + e.getMessage());
-                RuntimeException exception = new RuntimeException("threadName=" + name + ",exception:" + e.getMessage());
-                exception.setStackTrace(e.getStackTrace());
-                throw exception;
-            }
-        }
-    }*/
-    private Runnable mRunnable;
     /**
      * {@code U+200B}: Zero-Width Space
      */
@@ -181,32 +147,4 @@ public class ShadowThread extends Thread {
         super(group, target, makeThreadName(name, prefix), stackSize);
     }
 
-
-    @Override
-    public synchronized void start() {
-        CibThreadPool.getInstance().getIoTasks().execute(ShadowThread.this);
-    }
-
-    class MyRunnable implements Runnable {
-
-        String name;
-        public MyRunnable(String name){
-            this.name = name;
-        }
-
-        @Override
-        public void run() {
-            try {
-                ShadowThread.this.run();
-                Log.d("ShadowThread","run name="+name);
-            } catch (Exception e) {
-                setName(name);
-                Log.w("ShadowThread","name="+name+",exception:"+ e.getMessage());
-                e.printStackTrace();
-                RuntimeException exception = new RuntimeException("threadName="+name+",exception:"+ e.getMessage());
-                exception.setStackTrace(e.getStackTrace());
-                throw exception;
-            }
-        }
-    }
 }

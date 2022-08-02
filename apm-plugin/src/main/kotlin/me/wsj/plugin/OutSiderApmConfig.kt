@@ -28,11 +28,12 @@ open class OutSiderApmConfig {
         excludes.add("androidx/")
         excludes.add("sun/")
         excludes.add("com/sun/")
-//        excludes.add("okhttp3/")
+        excludes.add("okhttp3/")
         excludes.add("okio/")
         excludes.add("org/apache/")
         excludes.add("org/intellij/")
         excludes.add("kotlin/")
+        excludes.add("module-info")
         excludes.add("com/google/android/")
         //排除OutSiderAPM自身代码的注入
         excludes.add("me/wsj/core/utils/Looger/")

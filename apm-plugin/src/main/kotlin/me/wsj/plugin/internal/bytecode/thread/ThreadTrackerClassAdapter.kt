@@ -3,29 +3,29 @@ package me.wsj.plugin.internal.bytecode.thread
 import me.wsj.plugin.internal.bytecode.BaseClassVisitor
 import me.wsj.plugin.utils.TypeUtil.Companion.isNeedWeaveMethod
 import me.wsj.plugin.utils.TypeUtil.Companion.isRunMethod
+import me.wsj.plugin.utils.log
+import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 
 class ThreadTrackerClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
+
+    override fun excludeList()=listOf(
+        "me/wsj/apm",
+        "io/reactivex/internal/schedulers/SchedulerPoolFactory${'$'}ScheduledTask"
+    )
+
     override fun visitMethod(
         access: Int,
         name: String,
-        desc: String,
+        descriptor: String?,
         signature: String?,
-        exceptions: Array<out String>?
+        exceptions: Array<out String>?,
+        mv: MethodVisitor
     ): MethodVisitor {
-        if (isInterface || !isNeedWeaveMethod(className, access) || specialExclude(className)) {
-            return super.visitMethod(access, name, desc, signature, exceptions);
-        }
-
-        val mv = cv.visitMethod(access, name, desc, signature, exceptions)
-        if (isRunMethod(name, desc) && mv != null) {
-            return ThreadTrackerMethodAdapter(className.replace("/", "."), name, desc, api, access, desc, mv)
+        if (isRunMethod(name, descriptor)) {
+            return ThreadTrackerMethodAdapter(className.replace("/", "."), name, descriptor, api, access, mv)
         }
         return mv
-    }
-
-    fun specialExclude(className: String): Boolean {
-        return className.startsWith("me/wsj/apm".replace(".", "/"))
     }
 }

@@ -12,11 +12,15 @@ class TypeUtil {
 
     companion object {
 
-        fun isNeedWeaveMethod(className: String, access: Int): Boolean {
-            return isNeedWeave(className) && isNeedVisit(access)
+        fun isNeedWeaveMethod(
+            className: String,
+            access: Int,
+            excludeList: List<String>? = null
+        ): Boolean {
+            return isNeedWeave(className, excludeList) && isNeedVisit(access)
         }
 
-        fun isNeedWeave(className: String): Boolean {
+        fun isNeedWeave(className: String, excludeList: List<String>? = null): Boolean {
             if (PluginConfig.outsiderApmConfig().whitelist.size > 0) {
                 PluginConfig.outsiderApmConfig().whitelist.forEach {
                     if (className.startsWith(it.replace(".", "/"))) {
@@ -31,6 +35,12 @@ class TypeUtil {
                     }
                 }
 
+                excludeList?.forEach {
+                    if (className.startsWith(it.replace(".", "/"))) {
+//                        log("exclude : $className")
+                        return false
+                    }
+                }
                 PluginConfig.outsiderApmConfig().excludes.forEach {
                     if (className.startsWith(it.replace(".", "/"))) {
                         return false
@@ -58,9 +68,10 @@ class TypeUtil {
         private fun isNeedVisit(access: Int): Boolean {
             //不对抽象方法、native方法、桥接方法、合成方法进行织入
             if (access and Opcodes.ACC_ABSTRACT !== 0
-                    || access and Opcodes.ACC_NATIVE !== 0
-                    || access and Opcodes.ACC_BRIDGE !== 0
-                    || access and Opcodes.ACC_SYNTHETIC !== 0) {
+                || access and Opcodes.ACC_NATIVE !== 0
+                || access and Opcodes.ACC_BRIDGE !== 0
+                || access and Opcodes.ACC_SYNTHETIC !== 0
+            ) {
                 return false
             }
             return true
@@ -78,11 +89,11 @@ class TypeUtil {
             return methodName == "onPageFinished" && methodDesc == "(Landroid/webkit/WebView;Ljava/lang/String;)V"
         }
 
-        fun isRunMethod(methodName: String, methodDesc: String): Boolean {
+        fun isRunMethod(methodName: String, methodDesc: String?): Boolean {
             return methodName == "run" && methodDesc == "()V"
         }
 
-        fun isOnReceiveMethod(methodName: String, methodDesc: String): Boolean {
+        fun isOnReceiveMethod(methodName: String, methodDesc: String?): Boolean {
             return methodName == "onReceive" && methodDesc == "(Landroid/content/Context;Landroid/content/Intent;)V"
         }
 
@@ -90,7 +101,7 @@ class TypeUtil {
             return className == "okhttp3/OkHttpClient\$Builder"
         }
 
-        fun isOkhttpClientBuild(methodName: String, methodDesc: String): Boolean {
+        fun isOkhttpClientBuild(methodName: String, methodDesc: String?): Boolean {
             return ("<init>" == methodName && ("()V" == methodDesc || "(Lokhttp3/OkHttpClient;)V" == methodDesc))
         }
     }

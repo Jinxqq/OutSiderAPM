@@ -9,7 +9,14 @@ import org.objectweb.asm.Type
 import org.objectweb.asm.commons.LocalVariablesSorter
 
 
-class FuncMethodAdapter(private val className: String, private val methodName: String, private val methodDesc: String, api: Int, access: Int, desc: String?, mv: MethodVisitor?) : LocalVariablesSorter(api, access, desc, mv) {
+class FuncMethodAdapter(
+    private val className: String,
+    private val methodName: String,
+    private val methodDesc: String?,
+    api: Int,
+    access: Int,
+    mv: MethodVisitor?
+) : LocalVariablesSorter(api, access, methodDesc, mv) {
 
     private var startTimeIndex = 0
     private var lineNumber = 0
@@ -27,7 +34,6 @@ class FuncMethodAdapter(private val className: String, private val methodName: S
         } else if (TypeUtil.isOnReceiveMethod(methodName, methodDesc)) {
             whenMethodEnter()
         }
-
     }
 
     private fun whenMethodEnter() {
@@ -61,7 +67,13 @@ class FuncMethodAdapter(private val className: String, private val methodName: S
         mv.visitLdcInsn("execution(void $className.onReceive(Context context, Intent intent))")
         mv.visitLdcInsn("onReceive")
         mv.visitInsn(ACONST_NULL)
-        mv.visitMethodInsn(INVOKESTATIC, "me/wsj/core/job/func/FuncTrace", "dispatch", "(JLjava/lang/String;Ljava/lang/String;Landroid/content/Context;Landroid/content/Intent;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", false)
+        mv.visitMethodInsn(
+            INVOKESTATIC,
+            "me/wsj/core/job/func/FuncTrace",
+            "dispatch",
+            "(JLjava/lang/String;Ljava/lang/String;Landroid/content/Context;Landroid/content/Intent;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
+            false
+        )
     }
 
     private fun whenRunMethodExit() {
@@ -75,7 +87,13 @@ class FuncMethodAdapter(private val className: String, private val methodName: S
         mv.visitLdcInsn("execution(void $className.run())")
         mv.visitLdcInsn("run")
         mv.visitInsn(ACONST_NULL)
-        mv.visitMethodInsn(INVOKESTATIC, "me/wsj/core/job/func/FuncTrace", "dispatch", "(JLjava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", false)
+        mv.visitMethodInsn(
+            INVOKESTATIC,
+            "me/wsj/core/job/func/FuncTrace",
+            "dispatch",
+            "(JLjava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
+            false
+        )
 
     }
 }

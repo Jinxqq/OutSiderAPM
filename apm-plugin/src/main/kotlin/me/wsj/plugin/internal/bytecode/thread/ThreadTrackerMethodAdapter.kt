@@ -1,15 +1,19 @@
 package me.wsj.plugin.internal.bytecode.thread
 
-import me.wsj.plugin.utils.TypeUtil
-import org.objectweb.asm.Label
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.Opcodes.*
-import org.objectweb.asm.Type
+import me.wsj.plugin.utils.log
+import org.objectweb.asm.*
+import org.objectweb.asm.Opcodes.INVOKESTATIC
 import org.objectweb.asm.commons.LocalVariablesSorter
 
 
-class ThreadTrackerMethodAdapter(private val className: String, private val methodName: String, private val methodDesc: String, api: Int, access: Int, desc: String?, mv: MethodVisitor?) : LocalVariablesSorter(api, access, desc, mv) {
+class ThreadTrackerMethodAdapter(
+    private val className: String,
+    private val methodName: String,
+    private val methodDesc: String?,
+    api: Int,
+    access: Int,
+    mv: MethodVisitor?
+) : LocalVariablesSorter(api, access, methodDesc, mv) {
 
     private var lineNumber = 0
 
@@ -18,16 +22,24 @@ class ThreadTrackerMethodAdapter(private val className: String, private val meth
         super.visitLineNumber(line, start)
     }
 
-    override fun visitCode() {
-        super.visitCode()
-        // 记录开始时间
-        if (TypeUtil.isRunMethod(methodName, methodDesc)) {
-            whenMethodEnter()
-        }
+    override fun visitInsn(opcode: Int) {
+        super.visitInsn(opcode)
+        // 植入代码
+        weaveTrackCode()
     }
 
-    private fun whenMethodEnter() {
+    private fun weaveTrackCode() {
 //        me/wsj/apm/thread/ThreadTracker.trackOnce:()V
-        mv.visitMethodInsn(INVOKESTATIC, "me/wsj/apm/thread/ThreadTracker", "trackOnce", "()V", false);
+        val location = "$className line num: $lineNumber"
+
+        log(location, true)
+        mv.visitLdcInsn(location)
+        mv.visitMethodInsn(
+            INVOKESTATIC,
+            "me/wsj/apm/thread/ThreadTracker",
+            "trackOnce",
+            "(Ljava/lang/String;)V",
+            false
+        )
     }
 }

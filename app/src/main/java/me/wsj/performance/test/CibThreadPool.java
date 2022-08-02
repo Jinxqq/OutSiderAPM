@@ -1,10 +1,11 @@
-package me.wsj.apm.thread;
+package me.wsj.performance.test;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import me.wsj.performance.anno.MyAnno;
 
 /**
  * Created by shiju.wang on 2022/3/7
@@ -18,7 +19,7 @@ public class CibThreadPool {
     /*
      * set thread keep alive time
      */
-    private static final int KEEP_ALIVE_TIME = 30;
+    private static final int KEEP_ALIVE_TIME = 60;
 
     /*
      * thread pool executor for io tasks
@@ -55,11 +56,11 @@ public class CibThreadPool {
 //        Looger.e("核心线程数量： " + NUMBER_OF_CORES);
 
         mIoTasks = new ThreadPoolExecutor(
-                0,
-                Integer.MAX_VALUE,
+                NUMBER_OF_CORES * 2,
+                NUMBER_OF_CORES * 2 + 1,
                 KEEP_ALIVE_TIME,
                 TimeUnit.SECONDS,
-                new SynchronousQueue<>()
+                new LinkedBlockingQueue<>(128)
         );
 
         mDefaultTasks = new ThreadPoolExecutor(
@@ -69,6 +70,7 @@ public class CibThreadPool {
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(256)
         );
+
         mMainThreadExecutor = new MainThreadExecutor();
     }
 
@@ -76,6 +78,7 @@ public class CibThreadPool {
         return mIoTasks;
     }
 
+    @MyAnno
     public Executor getDefaultTasks() {
         return mDefaultTasks;
     }

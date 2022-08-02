@@ -2,12 +2,10 @@ package me.wsj.plugin.internal.asm
 
 import me.wsj.plugin.internal.ExtendClassWriter
 import me.wsj.plugin.internal.PluginConfig
+import me.wsj.plugin.internal.bytecode.anno.AnnoClassAdapter
+import me.wsj.plugin.internal.bytecode.lam.LambdaMethodReferAdapter
 import me.wsj.plugin.internal.bytecode.func.FuncClassAdapter
-import me.wsj.plugin.internal.bytecode.log.LogClassAdapter
-import me.wsj.plugin.internal.bytecode.okhttp3.OkHttp3ClassAdapter
-import me.wsj.plugin.internal.bytecode.thread.ThreadClassAdapter
 import me.wsj.plugin.internal.bytecode.thread.ThreadTrackerClassAdapter
-import me.wsj.plugin.internal.bytecode.webview.WebClassAdapter
 import me.wsj.plugin.internal.concurrent.ITask
 import me.wsj.plugin.internal.concurrent.ThreadPool
 import me.wsj.plugin.utils.TypeUtil
@@ -51,23 +49,22 @@ class ASMWeaver {
         val classWriter = ExtendClassWriter(ClassWriter.COMPUTE_MAXS)
         var classWriterWrapper: ClassVisitor = classWriter
 
+        classWriterWrapper = AnnoClassAdapter(Opcodes.ASM8, classWriterWrapper)
+
         if (PluginConfig.outsiderApmConfig().funcEnabled) {
             classWriterWrapper = FuncClassAdapter(Opcodes.ASM8, classWriterWrapper)
         }
-//
-//        if (PluginConfig.outsiderApmConfig().netEnabled) {
-//            classWriterWrapper = NetClassAdapter(Opcodes.ASM8, classWriterWrapper)
-//        }
-//
+
         if (PluginConfig.outsiderApmConfig().threadTrackerEnabled) {
             classWriterWrapper = ThreadTrackerClassAdapter(Opcodes.ASM8, classWriterWrapper)
+            classWriterWrapper = LambdaMethodReferAdapter(Opcodes.ASM8, classWriterWrapper)
         }
 
-        if (PluginConfig.outsiderApmConfig().threadEnabled) {
+        /*if (PluginConfig.outsiderApmConfig().threadEnabled) {
             classWriterWrapper = ThreadClassAdapter(Opcodes.ASM8, classWriterWrapper)
+            classWriterWrapper = CibThreadPoolClassAdapter(Opcodes.ASM8, classWriterWrapper)
         }
 
-//
         if (PluginConfig.outsiderApmConfig().okhttpEnabled) {
             classWriterWrapper = OkHttp3ClassAdapter(Opcodes.ASM8, classWriterWrapper)
         }
@@ -78,7 +75,7 @@ class ASMWeaver {
 
         if (PluginConfig.outsiderApmConfig().webviewEnabled) {
             classWriterWrapper = WebClassAdapter(Opcodes.ASM8, classWriterWrapper)
-        }
+        }*/
 
         classReader.accept(classWriterWrapper, ClassReader.EXPAND_FRAMES)
         return classWriter.toByteArray()

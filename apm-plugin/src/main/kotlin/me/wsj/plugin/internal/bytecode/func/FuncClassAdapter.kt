@@ -8,25 +8,20 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 
 class FuncClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
+
+    override fun excludeList() = listOf("me/wsj/apm")
+
     override fun visitMethod(
         access: Int,
         name: String,
-        desc: String,
+        descriptor: String?,
         signature: String?,
-        exceptions: Array<out String>?
+        exceptions: Array<out String>?,
+        mv: MethodVisitor
     ): MethodVisitor {
-        if (isInterface || !isNeedWeaveMethod(className, access) || specialExclude(className)) {
-            return super.visitMethod(access, name, desc, signature, exceptions);
-        }
-
-        val mv = cv.visitMethod(access, name, desc, signature, exceptions)
-        if ((isRunMethod(name, desc) || isOnReceiveMethod(name, desc)) && mv != null) {
-            return FuncMethodAdapter(className.replace("/", "."), name, desc, api, access, desc, mv)
+        if (isRunMethod(name, descriptor) || isOnReceiveMethod(name, descriptor)) {
+            return FuncMethodAdapter(className.replace("/", "."), name, descriptor, api, access, mv)
         }
         return mv
-    }
-
-    fun specialExclude(className: String): Boolean {
-        return className.startsWith("me/wsj/apm".replace(".", "/"))
     }
 }

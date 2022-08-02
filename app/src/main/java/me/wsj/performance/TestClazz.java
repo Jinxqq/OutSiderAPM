@@ -1,23 +1,43 @@
 package me.wsj.performance;
 
-import me.wsj.apm.thread.ShadowThread;
+
+import android.util.Log;
+import android.widget.Toast;
+
+import java.util.concurrent.Executors;
+
+import me.wsj.performance.anno.MyAnno;
+import me.wsj.performance.test.CibThreadPool;
 
 public class TestClazz {
-    private void test1() {
-        new Thread(new Runnable() {
+
+    /*private void test3() {
+        Executors.newFixedThreadPool(1);
+        Executors.newSingleThreadExecutor();
+        Executors.newCachedThreadPool();
+//        Executors.newScheduledThreadPool();
+
+        CibThreadPool.getInstance().getIoTasks().execute(new Runnable() {
             @Override
             public void run() {
 
             }
-        }).start();
+        });
+    }*/
+
+    @MyAnno
+    private void test1() {
+        CibThreadPool.getInstance().getIoTasks().execute(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
     }
 
-    private void test2() {
-        new ShadowThread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
+    public static void test2() {
+        CibThreadPool.getInstance().getIoTasks().execute(() -> {
+            Log.e("TestClazz", "test() 拉姆达测试");
+        });
     }
 }

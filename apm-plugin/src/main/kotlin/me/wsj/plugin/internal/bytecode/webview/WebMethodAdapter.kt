@@ -9,7 +9,7 @@ import org.objectweb.asm.commons.AdviceAdapter
 
 class WebMethodAdapter(
     methodName: String,
-    methodDesc: String,
+    methodDesc: String?,
     api: Int,
     access: Int,
     mv: MethodVisitor?

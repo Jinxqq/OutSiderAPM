@@ -1,17 +1,15 @@
-package me.wsj.plugin.internal.bytecode.log
+package me.wsj.plugin.internal.bytecode.thread
 
 import me.wsj.plugin.internal.bytecode.BaseClassVisitor
-import me.wsj.plugin.utils.TypeUtil
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 
+/**
+ * cib 项目专用，替换线程池
+ */
+class CibThreadPoolClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
 
-class LogClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
-
-    override fun excludeList()=listOf(
-        "me/wsj/apm",
-        "me/wsj/core"
-    )
+    override fun excludeList() = listOf("me/wsj/apm")
 
     override fun visitMethod(
         access: Int,
@@ -21,6 +19,6 @@ class LogClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
         exceptions: Array<out String>?,
         mv: MethodVisitor
     ): MethodVisitor {
-        return LogMethodAdapter(className, name, descriptor, api, access, mv)
+        return CibThreadPoolMethodAdapter(api, access, descriptor, mv)
     }
 }
