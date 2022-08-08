@@ -51,7 +51,6 @@ class ThreadActivity extends AppCompatActivity {
                     }
                 });
                 test2();*/
-                TestClazz.test2();
             }
         });
 

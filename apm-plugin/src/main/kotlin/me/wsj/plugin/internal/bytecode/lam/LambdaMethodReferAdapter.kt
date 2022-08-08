@@ -1,7 +1,6 @@
 package me.wsj.plugin.internal.bytecode.lam
 
 import me.wsj.plugin.utils.TypeUtil
-import me.wsj.plugin.utils.log
 import org.objectweb.asm.*
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InvokeDynamicInsnNode
@@ -109,64 +108,9 @@ class LambdaMethodReferAdapter(api: Int, val classVisitor: ClassVisitor) : Class
         middleMethodName: String,
         middleMethodDesc: String
     ) {
-        // 开始对生成的方法中插入或者调用相应的代码
-        val methodNode = MethodNode(
-            Opcodes.ACC_PRIVATE or Opcodes.ACC_STATIC /*| Opcodes.ACC_SYNTHETIC*/,
-            middleMethodName, middleMethodDesc, null, null
-        )
+        val methodNode = LambdaMiddleMethodAdapter(this.name,oldHandle, middleMethodName, middleMethodDesc)
         methodNode.visitCode()
-        // 植入代码
-        weaveHookCode(methodNode)
-
-        // 此块 tag 具体可以参考: [https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-6.html#jvms-6.5.invokedynamic](https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-6.html#jvms-6.5.invokedynamic)
-        var accResult = oldHandle.tag
-        when (accResult) {
-            Opcodes.H_INVOKEINTERFACE -> accResult = Opcodes.INVOKEINTERFACE
-            Opcodes.H_INVOKESPECIAL -> accResult = Opcodes.INVOKESPECIAL // private, this, super 等会调用
-            Opcodes.H_NEWINVOKESPECIAL -> {
-                // constructors
-                accResult = Opcodes.INVOKESPECIAL
-                methodNode.visitTypeInsn(Opcodes.NEW, oldHandle.owner)
-                methodNode.visitInsn(Opcodes.DUP)
-            }
-            Opcodes.H_INVOKESTATIC -> accResult = Opcodes.INVOKESTATIC
-            Opcodes.H_INVOKEVIRTUAL -> accResult = Opcodes.INVOKEVIRTUAL
-        }
-        val middleMethodType = Type.getType(middleMethodDesc)
-        val argumentsType = middleMethodType.argumentTypes
-        if (argumentsType.isNotEmpty()) {
-            var loadIndex = 0
-            for (tmpType in argumentsType) {
-                val opcode = tmpType.getOpcode(Opcodes.ILOAD)
-                methodNode.visitVarInsn(opcode, loadIndex)
-                loadIndex += tmpType.size
-            }
-        }
-        methodNode.visitMethodInsn(
-            accResult,
-            oldHandle.owner,
-            oldHandle.name,
-            oldHandle.desc,
-            false
-        )
-        val returnType = middleMethodType.returnType
-        val returnOpcodes = returnType.getOpcode(Opcodes.IRETURN)
-        methodNode.visitInsn(returnOpcodes)
-        methodNode.visitEnd()
+        // 添加到中间方法列表
         syntheticMethodList.add(methodNode)
-    }
-
-    private fun weaveHookCode(mv: MethodVisitor) {
-//        me/wsj/apm/thread/ThreadTracker.trackOnce:()V
-        val location = "${this.name} by Lambda:"
-
-        mv.visitLdcInsn(location)
-        mv.visitMethodInsn(
-            Opcodes.INVOKESTATIC,
-            "me/wsj/apm/thread/ThreadTracker",
-            "trackOnce",
-            "(Ljava/lang/String;)V",
-            false
-        )
     }
 }

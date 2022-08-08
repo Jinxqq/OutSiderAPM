@@ -74,6 +74,11 @@ class ThreadTracker : ITracker {
             instance.track(location)
         }
 
+        @JvmStatic
+        fun trackOnce() {
+            instance.track("new way")
+        }
+
         val instance: ThreadTracker by lazy { ThreadTracker() }
     }
 }

@@ -32,7 +32,7 @@ class ThreadTrackerMethodAdapter(
 //        me/wsj/apm/thread/ThreadTracker.trackOnce:()V
         val location = "$className line num: $lineNumber"
 
-        log(location, true)
+//        log(location, true)
         mv.visitLdcInsn(location)
         mv.visitMethodInsn(
             INVOKESTATIC,
