@@ -22,10 +22,19 @@ class ThreadTrackerMethodAdapter(
         super.visitLineNumber(line, start)
     }
 
-    override fun visitInsn(opcode: Int) {
-        super.visitInsn(opcode)
-        // 植入代码
+    override fun visitCode() {
+        super.visitCode()
+        log("-----------------visitCode--------------- " , true)
         weaveTrackCode()
+    }
+
+    override fun visitInsn(opcode: Int) {
+        /*if (opcode == Opcodes.RETURN) {
+            log("-----------------visitInsn--------------- " + opcode, true)
+            // 植入代码
+            weaveTrackCode()
+        }*/
+        super.visitInsn(opcode)
     }
 
     private fun weaveTrackCode() {

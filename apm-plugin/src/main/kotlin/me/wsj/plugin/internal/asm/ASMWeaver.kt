@@ -4,7 +4,9 @@ import me.wsj.plugin.internal.ExtendClassWriter
 import me.wsj.plugin.internal.PluginConfig
 import me.wsj.plugin.internal.bytecode.anno.AnnoClassAdapter
 import me.wsj.plugin.internal.bytecode.func.FuncClassAdapter
+import me.wsj.plugin.internal.bytecode.lam.LambdaMethodReferAdapter
 import me.wsj.plugin.internal.bytecode.lam.LambdaNodeAdapter
+import me.wsj.plugin.internal.bytecode.thread.ThreadTrackerClassAdapter
 import me.wsj.plugin.internal.concurrent.ITask
 import me.wsj.plugin.internal.concurrent.ThreadPool
 import me.wsj.plugin.utils.TypeUtil
@@ -55,9 +57,9 @@ class ASMWeaver {
         }
 
         if (PluginConfig.outsiderApmConfig().threadTrackerEnabled) {
-//            classWriterWrapper = ThreadTrackerClassAdapter(Opcodes.ASM8, classWriterWrapper)
+            classWriterWrapper = ThreadTrackerClassAdapter(Opcodes.ASM8, classWriterWrapper)
 //            classWriterWrapper = LambdaMethodReferAdapter(Opcodes.ASM8, classWriterWrapper)
-            classWriterWrapper = LambdaNodeAdapter(Opcodes.ASM8, classWriterWrapper)
+//            classWriterWrapper = LambdaNodeAdapter(Opcodes.ASM8, classWriterWrapper)
         }
 
         /*if (PluginConfig.outsiderApmConfig().threadEnabled) {

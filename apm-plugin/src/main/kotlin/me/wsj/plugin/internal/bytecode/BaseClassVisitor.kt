@@ -8,6 +8,7 @@ import org.objectweb.asm.Opcodes
 open abstract class BaseClassVisitor(api: Int, cv: ClassVisitor?) : ClassVisitor(api, cv) {
     var className = ""
     var isInterface: Boolean = false
+    var interfaces: List<String>? = null
 
     override fun visit(
         version: Int,
@@ -19,6 +20,7 @@ open abstract class BaseClassVisitor(api: Int, cv: ClassVisitor?) : ClassVisitor
     ) {
         super.visit(version, access, name, signature, superName, interfaces)
         this.className = name
+        this.interfaces = interfaces?.toList()
         this.isInterface = (access and Opcodes.ACC_INTERFACE) != 0
     }
 

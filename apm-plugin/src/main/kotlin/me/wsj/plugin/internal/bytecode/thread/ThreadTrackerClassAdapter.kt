@@ -10,7 +10,9 @@ import org.objectweb.asm.MethodVisitor
 
 class ThreadTrackerClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(api, cv) {
 
-    override fun excludeList()=listOf(
+    val targetInterface = "java/lang/Runnable"
+
+    override fun excludeList() = listOf(
         "me/wsj/apm",
         "io/reactivex/internal/schedulers/SchedulerPoolFactory${'$'}ScheduledTask"
     )
@@ -23,8 +25,20 @@ class ThreadTrackerClassAdapter(api: Int, cv: ClassVisitor?) : BaseClassVisitor(
         exceptions: Array<out String>?,
         mv: MethodVisitor
     ): MethodVisitor {
-        if (isRunMethod(name, descriptor)) {
-            return ThreadTrackerMethodAdapter(className.replace("/", "."), name, descriptor, api, access, mv)
+        if (isRunMethod(name, descriptor) && interfaces?.contains(targetInterface) == true) {
+            log("++++++++++++++++++++++++++++++++interface: ", true)
+            interfaces?.forEach {
+                log(" -> " + it, true)
+            }
+            log("--------------------------------interface: ", true)
+            return ThreadTrackerMethodAdapter(
+                className.replace("/", "."),
+                name,
+                descriptor,
+                api,
+                access,
+                mv
+            )
         }
         return mv
     }
