@@ -51,13 +51,29 @@ class LambdaNodeAdapter(api: Int, val classVisitor: ClassVisitor) : ClassNode(ap
 
                         val instructions = methodNode.instructions
                         if (instructions != null && instructions.size() > 0) {
+                            var lineNumber = 0
+                            val iterator = instructions.iterator()
+                            // 遍历方法中的指令找到行号指令，并获取其行号
+//                            log("+++++++++++start+++++++++++" + name, true)
+                            while (iterator.hasNext()) {
+                                val next = iterator.next()
+                                if (next is LineNumberNode) {
+                                    lineNumber = next.line
+//                                    log(name + " -> " + lineNumber, true)
+                                    break
+                                }
+                            }
+//                            log("----------end---------" + lineNumber, true)
+
                             val list = InsnList()
+//                            list.add(IntInsnNode(Opcodes.SIPUSH, lineNumber))
+                            list.add(LdcInsnNode(lineNumber.toString()))
                             list.add(
                                 MethodInsnNode(
                                     Opcodes.INVOKESTATIC,
                                     "me/wsj/apm/thread/ThreadTracker",
                                     "trackOnce",
-                                    "()V",
+                                    "(Ljava/lang/String;)V",
                                 )
                             )
                             instructions.insert(list)

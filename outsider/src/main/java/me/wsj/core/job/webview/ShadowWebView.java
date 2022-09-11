@@ -15,6 +15,10 @@ import android.webkit.WebView;
 import me.wsj.core.utils.Looger;
 import me.wsj.core.utils.ReflectionUtils;
 
+/**
+ * 预加载-chromium-引擎
+ * https://booster.johnsonlee.io/zh/guide/performance/webview-preloading.html#%E9%A2%84%E5%8A%A0%E8%BD%BD-chromium-%E5%BC%95%E6%93%8E
+ */
 public class ShadowWebView {
     public static void preloadWebView(final Application app) {
         new Handler(Looper.getMainLooper()).post(() -> {

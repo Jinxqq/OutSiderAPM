@@ -37,7 +37,8 @@ public class TestClazz {
 
     public void test2() {
         CibThreadPool.getInstance().getIoTasks().execute(() -> {
-            Log.e("TestClazz", "test() 拉姆达测试");
+            Log.e("TestClazz", "test() 拉姆达测试1");
+            Log.e("TestClazz", "test() 拉姆达测试2");
         });
     }
 }

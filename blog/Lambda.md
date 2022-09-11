@@ -377,7 +377,7 @@ class LambdaNodeAdapter(api: Int, val classVisitor: ClassVisitor) : ClassNode(ap
 
 2，在Lambda表达式生成的方法中的指令集中插入Hook代码的指令集即可实现hook。
 
-该方法存在一定缺陷：1，难以获取插入位置的行号。2，只能针对Lambda表达式进行Hook，无法对方法引用进行Hook。
+该方法存在一定缺陷：1，~~难以获取插入位置的行号~~（可以实现，遍历方法中的指令集合找到`LineNumberNode`即可获取）。2，只能针对Lambda表达式进行Hook，无法对方法引用进行Hook。
 
 详细代码可以参考：[OutSiderAPM/LambdaNodeAdapter.kt at master · Jinxqq/OutSiderAPM · GitHub](https://github.com/Jinxqq/OutSiderAPM/blob/master/apm-plugin/src/main/kotlin/me/wsj/plugin/internal/bytecode/lam/LambdaNodeAdapter.kt)
 

@@ -58,7 +58,7 @@ class ASMWeaver {
 
         if (PluginConfig.outsiderApmConfig().threadTrackerEnabled) {
             classWriterWrapper = ThreadTrackerClassAdapter(Opcodes.ASM8, classWriterWrapper)
-//            classWriterWrapper = LambdaMethodReferAdapter(Opcodes.ASM8, classWriterWrapper)
+            classWriterWrapper = LambdaMethodReferAdapter(Opcodes.ASM8, classWriterWrapper)
 //            classWriterWrapper = LambdaNodeAdapter(Opcodes.ASM8, classWriterWrapper)
         }
 
